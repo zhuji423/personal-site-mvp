@@ -1,6 +1,12 @@
-﻿# 基于心电散点图识别的心脏类疾病诊断
+﻿---
+title: 基于心电散点图识别的心脏类疾病诊断
+description: 本科论文，围绕心电散点图、混沌理论和心脏类疾病诊断展开。
+featured: true
+---
 
-[打开 PDF 论文](../assets/undergraduate-thesis.pdf)
+# 基于心电散点图识别的心脏类疾病诊断
+
+[打开 PDF 论文](/personal-site-mvp/assets/undergraduate-thesis.pdf)
 
 ---
 
@@ -26,7 +32,7 @@
 这个标题在许多文章中被引用和修改，变为了目前广为流传的蝴蝶效应[@Kellert+1994]。尽管这些系统是确定性的，这种情况仍然可能会发生，这意味着它们的未来行为遵循独特的演变规律[@zalta1995stanford].并且完全由它们的初始条件决定，不涉及随机元素。换句话说，这些系统的确定性本质并不能使它们可预测[@werndl2020new]。 这种行为被称为确定性混沌，或者简称为混沌。在模拟心率、大脑功能等内源性生物节律方面，混沌理论被发现有较多应用，本文所研究的心电散点图就是一个很好的例子。
 
 &emsp;&emsp;洛伦兹发现了非线性系统的混沌行为，也就是天气的混沌行为。洛伦兹还用图形描述了他的发现，下面展示的图形的是他的第二个发现：奇异Lorenz吸引子。
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com//d2l20220510164151.png)
+![](/personal-site-mvp/assets/thesis-images/figure-01.png)
 
 <center>图1.Lorenz奇异吸引子</center>
 ### 2. 吸引子
@@ -37,7 +43,7 @@
 
 &emsp;&emsp;在常规的耗散动力系统中，吸引子通常有三种，以单摆作为例子，在考虑空气阻力的情况下，单摆会停留在某个点，这里的吸引子是一个不动点，如果不考虑空气阻力的情况下，单摆会做周期运动，吸引子是一个极限环。在一个复摆所组成的系统中，两个单摆相互制约，相互影响，可以看到由于初始角度的微小不同，三个复摆的轨迹有巨大的差异。在这种确定系统中存在的随机运动被称作混沌运动。
 
-<!-- ![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com//d2lDemonstrating_Chaos_with_a_Double_Pendulum.gif)
+<!-- ![](/personal-site-mvp/assets/thesis-images/figure-02.png)
 <center>图1. 三个初始条件具有微小差异的复摆运动轨迹</center> -->
 
 &emsp;&emsp;混沌运动在几何上的描述被称作分形，或是奇异吸引子，那什么是分形呢。
@@ -50,11 +56,23 @@
 
 &emsp;&emsp;下面利用较为通俗的语言进行描述：
 &emsp;&emsp;由下图可以看出在一维线段中，将线段平均分割，可以得到与之相似比为2的小线段，经过两个这样的小线段可以拼会原来的线段；一个正方形中可以找到与之相似的小正方形，相似比为2，需要四个小正方形还原大正方形；立方体中找到相似的小正方体，同时需要8个进行还原。简单的说，可以利用下式进行计算豪斯多夫维度：
-$$a^n = b\tag{1}$$
-$$n = log_{a}b\tag{2}$$
+
+
+$$
+a^n = b\tag{1}
+$$
+
+
+
+
+$$
+n = log_{a}b\tag{2}
+$$
+
+
 &emsp;&emsp;其中a是相似比,b是还原图形所需要的个数。
 
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com/d2l/20220417170524.png)
+![](/personal-site-mvp/assets/thesis-images/figure-03.png)
 
 <center>图2.豪斯多夫维度图解</center>
 
@@ -62,7 +80,12 @@ $$n = log_{a}b\tag{2}$$
 &emsp;&emsp;拓扑维度可以定义为几何体在欧式空间中确定自身位置所需要的数字的个数。其中欧式几何中所有的图形都是都拥有一样的的豪斯多夫维度与拓扑维数。
 
 &emsp;&emsp;若拓扑维数记为D，豪斯多夫维度记为$D_T$，D总是一个整数，$D_T$可以不是一个整数,且满足等式
-$$D_T\geq D \tag{3}$$
+
+
+$$
+D_T\geq D \tag{3}
+$$
+
 
 &emsp;&emsp;分形图拥有很多独特的性质，是传统的欧式几何图形所没有的。例如
 
@@ -74,7 +97,7 @@ $$D_T\geq D \tag{3}$$
 
 <!--   在分形图中个人以为描绘自然最相似的一个分形图为蕨叶图。
 
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com/d2l%2F20220413152445.png)
+![](/personal-site-mvp/assets/thesis-images/figure-04.png)
 <center>图3.巴恩斯利蕨</center> -->
 
 &emsp;&emsp;在经典动力系统中已知被发现的三类吸引子有：
@@ -107,9 +130,13 @@ largest Lyapunov exponents from small data sets][@rosenstein1993practical]，可
 
 &emsp;&emsp;定义最大Lyapunov指数为
 
+
+
 $$
 d(t)=C \mathrm{e}^{\lambda_{1} t}\mathcal{} \tag{4}
 $$
+
+
 
 &emsp;&emsp;其中$d(t)$是在时间$t$上的平均发散程度，$C$是标准化初始分割的一个常数。
 
@@ -117,45 +144,98 @@ $$
 
 &emsp;&emsp;对于某一个可被观测到的一维时间序列而言，重建其隐含的动力系统的吸引子是十分必要的。重建好的目标轨迹X可以被表示为一个矩阵，其中每一行都是一个相空间的向量。
 
-$$X = (X_1, X_2, X_3... X_M)^T \tag{5}$$
+
+$$
+X = (X_1, X_2, X_3... X_M)^T \tag{5}
+$$
+
+
 &emsp;&emsp;其中$X_i$是系统在离散时间$i$的一个状态表示。对于一个具有$N$个点的时间序列${x_1,x_2 ... x_N}$ 而言,$X_i$由下式给出
 
-$$X_i = (x_i,x_{i+J} ... x_{i+(m-1)\tau})\tag{6}$$
+
+$$
+X_i = (x_i,x_{i+J} ... x_{i+(m-1)\tau})\tag{6}
+$$
+
+
 其中J是相空间重组的时延，m被称作嵌入维数(`需要解释`)
-因此，X是一个M*m维的矩阵$$M = N-(m-1)\tau\tag{7}$$
+因此，X是一个M*m维的矩阵
+
+$$
+M = N-(m-1)\tau\tag{7}
+$$
+
+
 
 &emsp;&emsp;`根据Takens theorem`，动力系统中任一分量的演化过程都是由与之相互作用的其他分量决定的。所以，重构系统的相空间只需要考察一个分量，通过固定的延迟点上的观测值重构原系统，重构的空间和原动力系统拓扑等价[@takens1981detecting]。
 可以获得m的估计，可以简单的进行估计，也就是就是$m>2n$,其中$n$是原来空间的维度。
 
 &emsp;&emsp;然而对于时间延长 $J$ 的估计通常是一个难以唯一确定的问题。本文将使用相关函数法进行选择。
 
-&emsp;&emsp;对于离散混沌时间序列${x_1,x_2 ... x_N}$而言，间隔为$j\tau$的自相关函数如下：$$R_{x x}(j \tau) = \frac{1}{N} \sum_{t=0}^{N-1} x(t) x(t+j \tau) \tag{8}$$
+&emsp;&emsp;对于离散混沌时间序列${x_1,x_2 ... x_N}$而言，间隔为$j\tau$的自相关函数如下：
+
+$$
+R_{x x}(j \tau) = \frac{1}{N} \sum_{t=0}^{N-1} x(t) x(t+j \tau) \tag{8}
+$$
+
+
 &emsp;&emsp;在j固定的情况下，绘制出相关函数与时间间隔$\tau$的图像，找到下降到其初始值的 $1 - 1/e$ 对应的$\tau$,就可以获得一个较为准确的估计。
 
 ##### 4.2.2寻找最近邻
 
 &emsp;&emsp;在获得一个时间序列的重组相空间之后，在如下公式的定义之下，可以通过搜索与特定参考点$X_{k}$的距离最小点来找到最近邻点$X_{\hat{k}}$。
+
+
 $$
 d_{k}(i)=\min_{X_{\hat{k}}} \left\|X_{k}-{X_{\hat{k}}}\right\| \tag{9}
 $$
+
+
 &emsp;&emsp;其中$d_{k}(i)$是第k个点经过$i$离散时间到最近邻的距离。
 $ \left\|·\right\| $ 为欧几里得距离。$k$ 与 $\hat{k}$需要满足一个额外的条件来保证结果的准确性：最近邻居之间的距离需要大于时间序列的平均周期$p$。平均周期可以被估计为功率谱平均频率的倒数。
-$$|k-\hat{k}| > p  \tag{10} $$ 
+
+
+$$
+|k-\hat{k}| > p  \tag{10}
+$$
+
 
 &emsp;&emsp;这使我们可以将每对邻居视为不同轨迹的临近初始条件。 最大的李雅普诺夫指数可以被估计为最近邻居的平均分离率。
-$$\lambda_{1}(i)=\frac{1}{i \Delta t} \frac{1}{(M-i)} \sum_{k=1}^{M-i} \ln \frac{d_{k}(i)}{d_{k}(0)} \tag{11}$$
+
+
+$$
+\lambda_{1}(i)=\frac{1}{i \Delta t} \frac{1}{(M-i)} \sum_{k=1}^{M-i} \ln \frac{d_{k}(i)}{d_{k}(0)} \tag{11}
+$$
+
+
 &emsp;&emsp;其中$\Delta t$是时间序列的取样周期。$d_{k}(i)$ 是第k对最近邻在$i$个离散时间步之后的最短距离。
 
 &emsp;&emsp;根据方程(1)所定义的最大Lyapunov指数，我们假设第 $k$ 对最近邻近似地以最大 Lyapunov 指数给出的速率发散：
-$${d_{k}(i) \approx C_{k} e^{\lambda_{1}(i \Delta t)}} \tag{12}$$
+
+
+$$
+{d_{k}(i) \approx C_{k} e^{\lambda_{1}(i \Delta t)}} \tag{12}
+$$
+
+
 &emsp;&emsp;$C_{k}$是初始距离。将方程(12)两边都取对数，可得
 
-$$\ln d_{k}(i) \approx \ln C_{j} + \lambda_{1}(i \Delta t)\tag{13}$$
+
+$$
+\ln d_{k}(i) \approx \ln C_{j} + \lambda_{1}(i \Delta t)\tag{13}
+$$
+
+
 &emsp;&emsp;方程10表示由一组几乎平行的直线$k = 1,2... M$,每一条直线的斜率都近乎正比于$\lambda_{1}$
 
 忽略方程中的常数，$y(i) =  \lambda_{1}i$,可得：
 
-$$y(i)=\frac{1}{\Delta t}\left\langle\ln d_{k}(i)\right\rangle\tag{14}$$
+
+$$
+y(i)=\frac{1}{\Delta t}\left\langle\ln d_{k}(i)\right\rangle\tag{14}
+$$
+
+
 &emsp;&emsp;利用最小二乘法对$\lambda_{1}$进行估计可以得到最大Lyapunov指数。其中$\left\langle\ln d_{k}(i)\right\rangle$为对应所有$j$的一个均值。
 
 ##### 4.2.3 心电数据应用
@@ -171,7 +251,13 @@ $$y(i)=\frac{1}{\Delta t}\left\langle\ln d_{k}(i)\right\rangle\tag{14}$$
 <center>表1.三种疾病选取出的m与j对应表格</center>
 
 &emsp;&emsp;以房颤数据集$M = 1000$的一部分数据
-$$X = (X_1, X_2, X_3... X_{1000})^T \tag{15}$$
+
+
+$$
+X = (X_1, X_2, X_3... X_{1000})^T \tag{15}
+$$
+
+
 作为实例进行阐述具体实现过程。其中
 
 1. 首先根据上表选取合适的嵌入维度数3与时间延长20，用于进行相空间重构，可以得到$1000-(3-1)*10$行$3$列的一个相空间矩阵$X$
@@ -179,7 +265,7 @@ $$X = (X_1, X_2, X_3... X_{1000})^T \tag{15}$$
 3. 为了计算$d_k(i)$,在第k个相空间轨迹与其相邻的$\hat{k}$邻居满足在时间$i$离散步之后的基础上，还满足了第$k$个相空间轨迹与第$\hat{k}$之间的差距必须大于平均周期$0.1M$，可以利用$dmat$计算出一个关于$i$的一个向量，将其取对数在相加之后得到一个分离值$ln(divergence)$
 4. 利用不同的时间离散步与分离值进行线性拟合可以得到如下的曲线。
 
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com//d2lallplot.jpg)
+![](/personal-site-mvp/assets/thesis-images/figure-05.png)
 
 <center>图3.室上性、室速性心力衰竭、阵发性、长期房颤混沌性质验证结果图</center>
   其中线性曲线的斜率就是该混沌序列的Lyapunov指数，可以看出上图中四种疾病的斜率均为整数
@@ -200,14 +286,14 @@ $$X = (X_1, X_2, X_3... X_{1000})^T \tag{15}$$
 &emsp;&emsp;对于心脏信号的研究主要基于标准的心电图(electrocardiogram，ECG)，即心电的电压幅度随时间变化的信号，医学界将从心电信号中提取的心搏信号称为心率变异信号(Heart rate variability,HRV)[@altan2016multistage]，对心电信号进行特征提取并进行分析识别的主要手段有两种[@le2018feature]：
 &emsp;&emsp;第一种基于其波形结构进行时域或者频域的线性分析，(1)时域分析：抽取ECG信号中P波，QRS复合波，RR间期等来对特定的疾病进行直接判断，例如上述波形的频率，波数，持续时间都是心房颤动(AF)、早产房收缩需要考虑的特征。RR间期是其中最重要的一个特征(2)频域分析：利用快速傅里叶变化对ECG信号进行数学变换，其中主频峰值、主峰以下的光谱含量、峰值波段中的光谱浓度等特征已显示在心律失常检测中的有效性。其中可以采用不同的方法对于获取的qrs波形进行去噪，其中噪音可能由于各种原因被引入，例如检测心电信号的机器，和病人连接的电机处都是很有可能导致噪音被引入。对不同形式的噪音，有不同的去噪方法[@makhzani2013k]
 
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com//d2l20220417184128.png)
+![](/personal-site-mvp/assets/thesis-images/figure-06.png)
 
 <center>图4.ECG信号对应的波形名称</center>
   第二种则是非线性的特征提取，由于线性特征无法展现心电信号的动态特征，需要非线性特征来展现ECG信号的混沌特性以及心率变异性(Heart rate variability,HRV)。主要方法有(1)熵：利用信息熵，排列熵对疾病进行分类.(2)洛伦兹散点图(庞加莱散点图)是利用RR(i),RR(i+1)的散点图，利用该图像特征可以对疾病进行分类(3)隐马尔科夫模型：隐马尔科夫模型为基于观测预测状态机器状态的统计模型。RR 序列可被建模为三态 Markov 过程进行分析。
 
 &emsp;&emsp;通过对心电信号进行分析可以对患者的疾病类型进行诊断。RR间期是指人类心跳两个R波之间的时间差，如图5所示。其数值可以表示人类心跳的一次心动周期时间。心电散点图通过将动态心电图中的RR间期化为图像坐标，在坐标系中迭代作图制成的心电图像。通过绘制心电散点图能够将充分利用心电数据，将一般心电图难以识别的疾病心电信号变得更加的突出。
 
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com/d2l/20220417184316.png)
+![](/personal-site-mvp/assets/thesis-images/figure-07.png)
 
 <center>图5.RR间期</center>
 
@@ -215,22 +301,34 @@ $$X = (X_1, X_2, X_3... X_{1000})^T \tag{15}$$
 
 &emsp;&emsp;本文对于方法的改进基于[@RRplot]中提出的二维心电散点图，通过将散点的频次进行更好的估计使得产生的三维心电散点图更加的具有特征以及容易识别。同时此方法已申请专利并已获授权[@3DRRplot]
 
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com/d2l/20220417202440.png)
+![](/personal-site-mvp/assets/thesis-images/figure-08.png)
 
 <center>图6.三维散点图像作图方法</center>
 
 ### 步骤1：心电波形图数据预处理
 
-&emsp;&emsp;从美国麻省理工学院提供的MIT-BIH心电数据库中提取心电数据，结合所收集到的数据。在心电波形图原始数据中，提取其中的RR间期数据，并储存在一维数组$$[x1,x2, ……, xi, ……, xn]$$
+&emsp;&emsp;从美国麻省理工学院提供的MIT-BIH心电数据库中提取心电数据，结合所收集到的数据。在心电波形图原始数据中，提取其中的RR间期数据，并储存在一维数组
+
+$$
+[x1,x2, ……, xi, ……, xn]
+$$
+
+
 
 &emsp;&emsp;本例选取20000个RR间期数据作为一组绘制图像；
 其中，$x_i$表示第$i$个RR间期数据，n表示RR间期数据个数，$0<i≤20000$；
 
 ### 步骤2：建立二维心电散点图
 
-&emsp;&emsp;建立维度为$m*m$的二维心电散点图平面坐标系。横轴为$X$，纵轴为$Y$。其中$m=200$。其上的散点为$${P_1(x_1, x_2), P_2(x_2, x_3), …… P_j(x_j, x_{j+1}), …… P_{n-1}(x_{19999}, x_{20000})}\tag{12}$$，其中$P_j (x_j, x_{j+1})$表示第$j$个二维散点，$x_j$表示$P_j (x_j, x_{j+1})$的X坐标，$x_{j+1}$表示$P_j(x_j, x_{j+1})$的$Y$坐标，$0<j≤19999$;
+&emsp;&emsp;建立维度为$m*m$的二维心电散点图平面坐标系。横轴为$X$，纵轴为$Y$。其中$m=200$。其上的散点为
+
+$$
+{P_1(x_1, x_2), P_2(x_2, x_3), …… P_j(x_j, x_{j+1}), …… P_{n-1}(x_{19999}, x_{20000})}\tag{12}
+$$
+
+，其中$P_j (x_j, x_{j+1})$表示第$j$个二维散点，$x_j$表示$P_j (x_j, x_{j+1})$的X坐标，$x_{j+1}$表示$P_j(x_j, x_{j+1})$的$Y$坐标，$0<j≤19999$;
 如图2所示为二维心电散点图实例。
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com//d2l20220510100653.png)
+![](/personal-site-mvp/assets/thesis-images/figure-09.png)
 
 <center>图7.二维心电散点图</center>
 ### 步骤3：统计相同坐标散点的频次
@@ -240,26 +338,44 @@ $$X = (X_1, X_2, X_3... X_{1000})^T \tag{15}$$
 
 &emsp;&emsp;使用$NP(x_j, x—_{j+1}, f(P(x_j, x_{j+1})))$表示其中的某一个三维散点。，则$x_j$表示$NP(x_j, x_{j+1}, f(P(x_j, x_{j+1})))$的$X$坐标，$x_{j+1}$表示$NP(x_j, x_{j+1}, f(P(x_{j}, x_{j+1})))$的$Y$坐标，$f(P(x_j, x_{j+1})$表示$NP(x_j, x_{j+1}, f(P(x_j, x_{j+1})))$的$Z$坐标，$0<j≤19999$；
 &emsp;&emsp;如图3所示为三维心电散点图实例。
-![](https://trainpic-1310848382.cos.ap-nanjing.myqcloud.com//d2l20220510100733.png)
+![](/personal-site-mvp/assets/thesis-images/figure-10.png)
 
 <center>图8.三维心电散点图</center>
 ### 步骤5：三维散点图切分
   由于所述的三维散点图难以进行滤波处理，于是考虑将三维散点图按照$X$坐标轴沿着$YOZ$所成平面切分，由于坐标轴大小为$200*200$，则共可以将三维图像分割为$200$份二维图像，每一份图像保留第三维的频次信息；
 ### 步骤6：二维散点图图像滤波
   对所述三维心电散点图进行图像滤波处理，所采用的滤波条件为：                           
-$$Y=\min \left(\sum\left(\left(u_{p}-g_{p}\right)^{2}+\lambda\left(a_{x}, p(g)\left(\frac{\partial u}{\partial x}\right)^{2}\right)+\lambda\left(a_{y}, p(g)\left(\frac{\partial u}{\partial y}\right)^{2}\right)\right)\right)\tag{16}$$      
+
+
+$$
+Y=\min \left(\sum\left(\left(u_{p}-g_{p}\right)^{2}+\lambda\left(a_{x}, p(g)\left(\frac{\partial u}{\partial x}\right)^{2}\right)+\lambda\left(a_{y}, p(g)\left(\frac{\partial u}{\partial y}\right)^{2}\right)\right)\right)\tag{16}
+$$
+
+
 其中，$u$代表输入的图像,$g$代表输出的图像，下标$p$代表像素点的空间位置。$Y$表示优化函数，$min$表示取最小值，$Y$需要取最小值，代表着输入图像与输出图像的信息值尽可能的小；$a_x$，$p(g)$和$a_y$，$p(g)$代表平滑项的权重，利用了拉格朗日数乘法，$λ$是拉格朗日乘数，对图像坐标点的$x$,$y$坐标分别求偏导是拉格朗日函数建立的前提；
   其中参数$a_x$,$p(g)$取值为：
-$$a_x,p(g)={({|\frac{\partial l}{\partial x}(p)|}^2)}^{-1}    $$                          
+
+
+$$
+a_x,p(g)={({|\frac{\partial l}{\partial x}(p)|}^2)}^{-1}
+$$
+
+
   参数$a_y$，$p(g)$取值为：
 
-$$a_y,p(g)={({|\frac{\partial l}{\partial y}(p)|}^2)}^{-1}\tag{15}$$                               
+
+$$
+a_y,p(g)={({|\frac{\partial l}{\partial y}(p)|}^2)}^{-1}\tag{15}
+$$
+
 
 ### 步骤7：三维散点图重建
 
 &emsp;&emsp;使用原点阵的排列方式将步骤6中经过滤波的200张二维图像进行排列连接，重新组成点阵如下：
 
-$$  
+
+
+$$
 \left[
   \begin{matrix}
   NP(1, 1, f(P(1,1)))^* & NP(1, 2, f(P(1,2)))^* &... &NP(1, 200, f(P(1,200)))^*\\
@@ -270,6 +386,8 @@ $$
   \right]
   \tag{16}
 $$
+
+
 
 &emsp;&emsp;使用$NP(x_j, x_{j+1}, f(P(x_{j}, x_{j+1})))^*$表示滤波后的某一个三维散点。则$x_j$表示$NP(x_j, x_{j+1}, f(P(x_j, x_{j+1})))^*$的$X$坐标，$x_{j+1}$表示$NP(x_j, x_{j+1}, f(P(x_j, x_{j+1})))^*$的$Y$坐标，$f(P(x_j, x_{j+1})$表示$NP(x_j, x_{j+1}, f(P(x_j, x_{j+1})))^*$的$Z$坐标，$0<j≤19999$。
 
@@ -292,7 +410,13 @@ $$
 
 3. 超参数设置：
    &emsp;&emsp;损失函数使用交叉熵函数
-   $$H(p, q)=-\sum p(x) \log q(x)$$
+
+
+$$
+H(p, q)=-\sum p(x) \log q(x)
+$$
+
+
    &emsp;&emsp;优化器使用随机梯度下降，学习率为$0.01$，动量为$0.9$。批量大小BatchSize选择32，最后训练两个epoch。
 4. 训练结果
    &emsp;&emsp;二维图像与三维图像在划分测试集的实验准确率如下

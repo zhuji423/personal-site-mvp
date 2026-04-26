@@ -1,3 +1,9 @@
+﻿---
+title: 个人网站
+description: 一个从 Python MVP 重构到 Astro 的静态个人网站。
+featured: true
+---
+
 # 个人网站
 
 一个最小版本的静态个人网站，用 Python 从 Markdown 生成 HTML。

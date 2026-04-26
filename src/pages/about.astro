@@ -1,0 +1,18 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="About" description="个人简介、本科论文和网站说明。">
+  <article class="prose">
+    <h1>About</h1>
+    <p>这里是我的个人网站，用来放项目、笔记和长期积累。</p>
+
+    <h2>本科论文</h2>
+    <p>
+      我的本科论文是《基于心电散点图识别的心脏类疾病诊断》。这篇论文围绕心电散点图、混沌理论和心脏类疾病诊断展开，是我本科阶段比较完整的一次研究与写作实践。
+    </p>
+    <p><a href={`${base}projects/undergraduate-thesis/`}>查看论文详情</a></p>
+  </article>
+</BaseLayout>

@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import EntryCard from "../components/EntryCard.astro";
+
+const base = import.meta.env.BASE_URL;
+const entrySlug = (id: string) => id.replace(/\.md$/, "");
+const projects = (await getCollection("projects")).sort(
+  (a, b) => Number(b.data.featured ?? false) - Number(a.data.featured ?? false),
+);
+const notes = await getCollection("notes");
+---
+
+<BaseLayout title="个人网站">
+  <section class="hero">
+    <p class="eyebrow">Personal site</p>
+    <h1>作品、笔记和长期积累</h1>
+    <p>这个网站用于整理项目、论文、技术笔记和后续从 Notion 迁移出来的内容。</p>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <h2>Projects</h2>
+      <a href={`${base}projects/`}>全部项目</a>
+    </div>
+    <div class="grid">
+      {projects.slice(0, 3).map((project) => (
+        <EntryCard title={project.data.title} description={project.data.description} href={`${base}projects/${entrySlug(project.id)}/`} />
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <h2>Notes</h2>
+      <a href={`${base}notes/`}>全部笔记</a>
+    </div>
+    <div class="grid">
+      {notes.slice(0, 6).map((note) => (
+        <EntryCard title={note.data.title} description={note.data.description} href={`${base}notes/${entrySlug(note.id)}/`} />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

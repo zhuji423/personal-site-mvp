@@ -1,0 +1,18 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EntryCard from "../../components/EntryCard.astro";
+
+const base = import.meta.env.BASE_URL;
+const entrySlug = (id: string) => id.replace(/\.md$/, "");
+const notes = await getCollection("notes");
+---
+
+<BaseLayout title="Notes">
+  <h1>Notes</h1>
+  <div class="grid listing">
+    {notes.map((note) => (
+      <EntryCard title={note.data.title} description={note.data.description} href={`${base}notes/${entrySlug(note.id)}/`} />
+    ))}
+  </div>
+</BaseLayout>
