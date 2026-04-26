@@ -175,8 +175,12 @@ def extract_title(markdown: str, fallback: str) -> str:
 def render_inline(text: str) -> str:
     escaped = escape(text)
     return re.sub(
-        r"\[([^\]]+)\]\((https?://[^)]+)\)",
-        lambda m: f'<a href="{m.group(2)}">{m.group(1)}</a>',
+        r"\[([^\]]+)\]\(([^)]+)\)",
+        lambda m: (
+            f'<a href="{m.group(2)}" target="_blank" rel="noopener">{m.group(1)}</a>'
+            if m.group(2).startswith(("http://", "https://")) or m.group(2).lower().endswith(".pdf")
+            else f'<a href="{m.group(2)}">{m.group(1)}</a>'
+        ),
         escaped,
     )
 
@@ -188,6 +192,7 @@ def flush_paragraph(parts: list[str], output: list[str]) -> None:
 
 
 def render_markdown(markdown: str) -> str:
+    markdown = markdown.lstrip("\ufeff")
     output: list[str] = []
     paragraph: list[str] = []
     list_open = False
@@ -325,9 +330,15 @@ def build_site(root: Path | str = ".") -> None:
 
     notes = read_pages(root, "notes")
     projects = read_pages(root, "projects")
+    about_source = root / "content" / "about.md"
 
     (site_dir / "assets").mkdir(parents=True, exist_ok=True)
     (site_dir / "assets" / "style.css").write_text(STYLE_CSS, encoding="utf-8")
+    source_assets = root / "content" / "assets"
+    if source_assets.exists():
+        for asset in source_assets.iterdir():
+            if asset.is_file():
+                shutil.copy2(asset, site_dir / "assets" / asset.name)
 
     home_body = f"""
     <section class="hero">
@@ -342,11 +353,14 @@ def build_site(root: Path | str = ".") -> None:
     write_page(site_dir / "index.html", "Home", home_body)
     write_page(site_dir / "notes.html", "Notes", f"<h1>Notes</h1>\n{card_grid(notes, 'notes')}")
     write_page(site_dir / "projects.html", "Projects", f"<h1>Projects</h1>\n{card_grid(projects, 'projects')}")
-    write_page(
-        site_dir / "about.html",
-        "About",
-        "<article><h1>About</h1><p>这里放你的个人介绍、技术方向和联系方式。</p></article>",
-    )
+    if about_source.exists():
+        about_markdown = about_source.read_text(encoding="utf-8")
+        about_title = extract_title(about_markdown, "About")
+        about_body = f"<article>{render_markdown(about_markdown)}</article>"
+    else:
+        about_title = "About"
+        about_body = "<article><h1>About</h1><p>这里放你的个人介绍、技术方向和联系方式。</p></article>"
+    write_page(site_dir / "about.html", about_title, about_body)
 
     for page in notes:
         write_page(site_dir / "notes" / f"{page.slug}.html", page.title, f"<article>{page.body_html}</article>", depth=1)
