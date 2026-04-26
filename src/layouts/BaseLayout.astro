@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { sitePath } from "../lib/paths";
 
 interface Props {
   title: string;
@@ -7,7 +8,6 @@ interface Props {
 }
 
 const { title, description = "作品、笔记和长期积累。" } = Astro.props;
-const base = import.meta.env.BASE_URL;
 const pageTitle = title === "个人网站" ? title : `${title} - 个人网站`;
 ---
 
@@ -22,11 +22,11 @@ const pageTitle = title === "个人网站" ? title : `${title} - 个人网站`;
   <body>
     <header class="site-header">
       <div class="wrap topbar">
-        <a class="brand" href={base}>个人网站</a>
+        <a class="brand" href={sitePath()}>个人网站</a>
         <nav aria-label="主导航">
-          <a href={`${base}projects/`}>Projects</a>
-          <a href={`${base}notes/`}>Notes</a>
-          <a href={`${base}about/`}>About</a>
+          <a href={sitePath("projects/")}>Projects</a>
+          <a href={sitePath("notes/")}>Notes</a>
+          <a href={sitePath("about/")}>About</a>
         </nav>
       </div>
     </header>
