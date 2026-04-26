@@ -268,23 +268,24 @@ def read_pages(root: Path, section: str) -> list[Page]:
     return pages
 
 
-def layout(title: str, body: str) -> str:
+def layout(title: str, body: str, depth: int = 0) -> str:
+    prefix = "../" * depth
     return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{escape(title)} - {SITE_TITLE}</title>
-  <link rel="stylesheet" href="/assets/style.css">
+  <link rel="stylesheet" href="{prefix}assets/style.css">
 </head>
 <body>
   <header>
     <div class="wrap topbar">
-      <a class="brand" href="/index.html">{SITE_TITLE}</a>
+      <a class="brand" href="{prefix}index.html">{SITE_TITLE}</a>
       <nav>
-        <a href="/projects.html">Projects</a>
-        <a href="/notes.html">Notes</a>
-        <a href="/about.html">About</a>
+        <a href="{prefix}projects.html">Projects</a>
+        <a href="{prefix}notes.html">Notes</a>
+        <a href="{prefix}about.html">About</a>
       </nav>
     </div>
   </header>
@@ -303,7 +304,7 @@ def card_grid(pages: list[Page], section: str) -> str:
     cards = []
     for page in pages:
         cards.append(
-            f'<a class="card" href="/{section}/{page.slug}.html">'
+            f'<a class="card" href="{section}/{page.slug}.html">'
             f"<h3>{escape(page.title)}</h3>"
             f"<p>{escape(page.source_path.name)}</p>"
             "</a>"
@@ -311,9 +312,9 @@ def card_grid(pages: list[Page], section: str) -> str:
     return '<div class="grid">' + "\n".join(cards) + "</div>" if cards else "<p>还没有内容。</p>"
 
 
-def write_page(path: Path, title: str, body: str) -> None:
+def write_page(path: Path, title: str, body: str, depth: int = 0) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(layout(title, body), encoding="utf-8")
+    path.write_text(layout(title, body, depth), encoding="utf-8")
 
 
 def build_site(root: Path | str = ".") -> None:
@@ -348,9 +349,9 @@ def build_site(root: Path | str = ".") -> None:
     )
 
     for page in notes:
-        write_page(site_dir / "notes" / f"{page.slug}.html", page.title, f"<article>{page.body_html}</article>")
+        write_page(site_dir / "notes" / f"{page.slug}.html", page.title, f"<article>{page.body_html}</article>", depth=1)
     for page in projects:
-        write_page(site_dir / "projects" / f"{page.slug}.html", page.title, f"<article>{page.body_html}</article>")
+        write_page(site_dir / "projects" / f"{page.slug}.html", page.title, f"<article>{page.body_html}</article>", depth=1)
 
 
 if __name__ == "__main__":
