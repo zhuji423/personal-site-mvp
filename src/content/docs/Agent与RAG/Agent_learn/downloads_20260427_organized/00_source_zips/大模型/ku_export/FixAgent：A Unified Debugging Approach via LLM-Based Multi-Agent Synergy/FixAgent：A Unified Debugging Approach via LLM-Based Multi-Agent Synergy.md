@@ -1,0 +1,88 @@
+---
+title: "FixAgent：A Unified Debugging Approach via LLM-Based Multi-Agent Synergy"
+description: "为了解决这些挑战，本文设计了三个方法来解决这些挑战。分别是LLMAgent专门化和协同、关键变量跟踪和程序上下文理解，这要求LLM提供明确的解释，并迫使他们关注关键的程序逻辑信息。实验证明，FixAgent在QuixBugs数据集上能够正确"
+date: "2026-10-11"
+category: "Agent与RAG"
+source: "F:\\百度工作\\02_Agent_learn\\Agent_learn\\downloads_20260427_organized\\00_source_zips\\大模型\\ku_export\\FixAgent：A Unified Debugging Approach via LLM-Based Multi-Agent Synergy\\FixAgent：A Unified Debugging Approach via LLM-Based Multi-Agent Synergy.md"
+---
+# FixAgent：A Unified Debugging Approach via LLM-Based Multi-Agent Synergy
+论文：《A Unified Debugging Approach via LLM-Based Multi-Agent Synergy》摘要FixAgent是一个基于大模型的自动化调试框架，利用大型语言模型（LLMs）来定位、修复和分析软件中的错误。目前基于LLM的调试工具面临的三个挑战：1）错误定位会影响修复结果；2）无法处理复杂逻辑的错误；3）忽视程序上下文。
+
+为了解决这些挑战，本文设计了三个方法来解决这些挑战。分别是LLMAgent专门化和协同、关键变量跟踪和程序上下文理解，这要求LLM提供明确的解释，并迫使他们关注关键的程序逻辑信息。实验证明，FixAgent在QuixBugs数据集上能够正确修复80个错误中的79个，并且能够比Codeflaws上最好的修复工具修复更多的缺陷。FixAgent的正确率达到了97.26%，显示了其有效性。
+
+简介缺陷的修复需要耗费大量的时间和金钱，自动化调试工具可以缓解手动调试的负担。传统的故障定位和自动程序修复方法存在一些问题，例如需要大量的人工测试用例，或者需要在不同的编程语言之间进行大量的定制。
+
+大型语言模型可以直接应用于自动程序修复，而不需要预定义的修复模式。然而目前基于LLM的调试工具仍然面临三个主要挑战：故障定位错误、复杂逻辑处理错误和忽视程序上下文。
+
+本文提出了FixAgent框架，通过LLM多智能体协同实现自动化调试。FixAgent采用了橡皮鸭调试的原则，将其应用于LLM调试中。
+
+FixAgent的设计旨在解决自动程序修复中的三个主要挑战：1）缺乏有效的协同工作；2）缺乏对关键变量的跟踪；3）缺乏对程序上下文的理解。
+
+FixAgent的设计包括三个主要部分：1）专业Agent协同工作；2）中间变量跟踪；3）程序上下文构建。
+
+实验结果表明，FixAgent在两个广泛使用的数据集上的表现优于所有基线。FixAgent可以修复3982个缺陷中的2780个缺陷，平均正确率为96.5%。在QuixBugs数据集上，它可以正确修复80个真实世界的错误中的79个，包括以前没有修复的10个错误。在Codeflaws数据集上，它比最好的APR基线（AlphaRepair）修复了24个更多的错误，比最好的LLM竞争对手（GPT4）修复了586个缺陷。我们还在Codeflaws和最近收集的数据集ConDefects（Python和Java）上进行了广泛的消融研究，以缓解LLM训练中数据泄漏的威胁。
+
+目标故障定位错误故障定位错误包括定位错误和定位缺失，会严重影响下游的修复。目前最先进的FL方法也存在准确率低的问题。在Defects4J V1.2.0上，目前的技术只能达到不到22.3%。
+
+复杂逻辑故障修复GPT4在在线编程平台LeetCode上达到与人类相当的性能。然而，LLM在修复逻辑错误方面仍然面临着巨大的困难，甚至失败案例的运行时信息对这些错误也没有帮助。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=7341af0ab7f0463d8dc1f33af7bb7414&docGuid=LvUHumsMF8uQXE)
+
+忽略程序上下文目前的APR工具只关注源代码和测试结果，而忽略了重要的程序上下文。图2展示了一个由高级APR工具生成的修复，它忽略了变量范围。这个案例突出了程序上下文的重要性。编程是一项解决问题的任务，因此我们应该对实际软件进行上下文感知的程序调试。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=71a035418c274376a7a573fa43a099d8&docGuid=LvUHumsMF8uQXE)
+
+方法FixAgent是一个基于LLM的统一调试框架，包括三个专门的Agent，分别用于定位错误、生成补丁和错误后审查。每个Agent都采用中间变量跟踪设计，并接收构建的程序上下文。还有一个额外的LLMAgent，用于生成测试输入以缓解过度拟合问题。如果生成的补丁不可行，我们将使用包含失败信息的反馈重新采样修复Agent。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=6721d44d0f954ca693033316c043720e&docGuid=LvUHumsMF8uQXE)
+
+专业Agent协同调试流程由三个LLMAgent组成，分别是故障定位器、修复生成器和后错误分析器。故障定位器用于识别有问题的代码语句，修复生成器旨在生成可执行且正确的补丁，后错误分析器分析原始代码存在问题的原因以及补丁背后的原理。这些Agent按顺序工作，每个Agent将其响应传递给下游Agent，这些Agent的响应组成最终的响应。每个Agent都有明确的角色描述和任务目标，并依赖上游结果影响其结果。最终的答案由故障定位器确定的有问题的语句、修复生成器生成的补丁以及后错误分析器提供的分析组成。
+
+中间变量跟踪我们提示每个Agent针对失败的测试用例跟踪关键的中间变量值，并将它们与预期的结果进行比较。每个Agent都被要求在其响应中明确地呈现这种跟踪，并伴随着对如何促进其答案推导的全面解释。我们的优先考虑对程序行为有重大影响的信息，例如核心逻辑执行和状态，帮助LLM专注于最有可能影响结果的部分，使其更容易识别和解决错误。我们的跟踪设计允许LLM将具有多个逻辑模块的复杂程序分解为多个中间状态，并在调试期间进行额外的计算。此外，该设计提高了LLM决策的透明度。我们可以看到智能体是如何得到答案的，从而实现潜在的人类互动。
+
+上下文构建FixAgent挖掘程序上下文的两个方面，即需求和依赖关系。首先，对于具有详细文档的程序，我们采用对程序功能、输入/输出格式、精度要求和其他相关信息的描述来阐明程序的预期行为。如果程序在没有文档的情况下实现了一个常见的算法，我们要求一个通用的LLM(可能不是FixAgent的基本模型)来介绍给定算法名称(通常是程序中的函数名称)的算法。引言作为需求描述。
+
+其次，我们解析有Bug程序的依赖关系，并提取这些依赖文件的代码。提取的代码放在程序的顶部。这个操作虽然简单，但通过确保LLM先处理相关代码，然后处理有问题的程序，可以很好地工作，因为大多数llm从左到右处理令牌，并在文件级代码上进行训练。这两种策略可以构建程序的信息上下文。
+
+其他测试输入生成：除了人工编写的测试用例之外，我们还专门设计了一个额外的Agent Crafter，用于生成测试用例。我们遵循（profile-specification-instruction）的格式来提示创作者。Crafter还向橡皮鸭解释了测试用例背后的基本原理。这引导制作者挖掘多样化的异常输入，鼓励长时间的测试输入。
+
+反馈支持的重采样：调试过程中不可避免会出现错误。我们采用反馈支持设计，以减少错误维修。如果FixAgent生成了一个不可信的补丁，我们重新采样FixAgent以获得另一个补丁，以会话方式提示失败的测试信息反馈。这种设计使FixAgent与以前的APR工具保持一致，后者通常对数千个候选补丁进行采样。最后，使用bug修复分析的最佳修复将返回给用户。用户也可以请求任何座席的具体响应，包括相应的回答和解释。
+
+实验本文试图回答以下三个问题：
+
+问题一：FixAgent与最先进的APR工具和LLM相比如何？问题二：FixAgent在不同LLM中的能力如何? FixAgent如何改进其基础模型？问题三：每个设计对FixAgent的贡献是什么？实验设置
+
+数据集。FixAgent与其他通用LLMs在公共数据库上进行了比较。比较使用APR指标，包括可行补丁和正确补丁的数量，以及正确率来评估FixAgent的有效性。使用了三个数据集进行评估：Codeflaws，QuixBugs和ConDefects。为了节省成本，只从每个数据中选择了300个有错误的程序进行比较。基线：与16个基线模型的比较，包括10个APR工具和6个基础LLM模型。问题一
+
+在Codeflaws和QuixBugs数据集上，FixAgent的修复效果都优于其他的自动程序修复方法。在Codeflaws数据集上，FixAgent的修复效果比其他自动程序修复方法和LLM都要好。在QuixBugs数据集上，FixAgent的修复效果也优于其他的自动程序修复方法。FixAgent修复了QuixBugs中7个之前没有被修复的bug。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=612d90b2bb1c4bc5ba9e6311a89fef12&docGuid=LvUHumsMF8uQXE)
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=4217a669edcd47e2b14016e2cee856cc&docGuid=LvUHumsMF8uQXE)
+
+问题二
+
+使用不同的基础LLM测试FixAgent的能力，结果表明，FixAgent可以有效地与不同的基础LLM协同工作，但会受到它们能力的影响。FixAgent在更大的模型上理论上应该表现更好，但FixAgent-deepseek -coder优于FixAgent-ChatGPT和FixAgent-Gemini，而Gemini和ChatGPT的模型尺寸要大得多。我们将这归因于DeepSeek-Coder的专业训练数据和目标。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=b91250b065054ffdaa3616949d847d32&docGuid=LvUHumsMF8uQXE)
+
+我们还评估了FixAgent如何在Codeflaws上改进其基础模型。在所有对比对中，FixAgent在GPT4上的改进最大，正确修补和合理修补的bug分别增加了33个和35个。总的来说，应用FixAgent平均可以比原始LLM提高20%。这种增强突出了设计的有效性，以非侵入性的方式显著提高了llm的调试能力，而不需要任何重新训练或微调，证明了LLM可以从软件原理中受益，如橡皮鸭。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=c2e91395caf54bb98ac23eb2661169af&docGuid=LvUHumsMF8uQXE)
+
+问题三
+
+FixAgent的设计中，上下文构建对其贡献最大。移除上下文会导致正确修复的错误减少122个，这凸显了上下文在调试中的重要性。其提供了理解潜在问题领域、推断预期功能和应用适当修复的潜力。这也解释了为什么语言模型在没有完美故障定位的情况下，仍然明显优于自动程序修复工具。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=0ca1365124c647dea9faf40a4ce8d271&docGuid=LvUHumsMF8uQXE)
+
+其次，变量跟踪是第二个重要的设计。没有跟踪会导致生成的可行和正确修补减少37和38个。这是由于LLMs在错误诊断和减少推理负荷方面的改进。通过口头表达每个变量的作用和预期行为，LLMs更有可能指出预期和实际结果之间的差异，从而促进有针对性的修复。此外，结构化解释减少了模型的推理负荷。使用一个Agent替换多Agent协同也有类似的负面影响，减少了28个可行和正确的修复。
+
+最不有用的设计是反馈支持的重新采样。尽管额外的反馈提供了更多信息，但它扩大了对话窗口，模型必须将有限的注意力分配给这些新信息，可能以牺牲其他关键细节为代价。这种权衡可能解释了为什么与独立采样相比，额外的反馈并没有显著增强LLMs的调试能力。
+
+限制FixAgent通过优化现有技能，显著提高了多个LLM的调试性能。然而，它的有效性与基础模型的基本能力密切相关。FixAgent无法从根本上改变LLM的内在能力，而是在一定范围内优化其现有技能。因此，我们选择GPT4作为默认基础模型，因为它在广泛的认知任务中具有先进的性能。
+
+为了缓解过拟合问题，我们引入了一个额外的Agent来生成测试输入，但它无法直接计算相应的预期输出或测试预期结果。这主要是由于LLM的内在概率机制，使得准确地提供计算问题的精确答案变得困难。解决这类类似数学推理的问题是LLM面临的重大挑战之一。我们的方法无法克服它们固有的限制，因此必须引入其他信息，如正确的代码或手动计算的答案，以获得生成输入的输出并形成完整的测试用例。
+
+总结FixAgent是第一个通过LLM Agent协同实现统一调试框架的提议。它以端到端的方式进行故障定位、补丁生成和错误后分析。我们的洞察力是LLM可以从开发人员认可的软件工程原则中受益。因此，我们遵循橡皮鸭调试的原则——详细解释代码，以创建新的设计，释放LLM的调试能力，并减轻以前的挑战。两个广泛使用的数据集的评估证明了FixAgent优于APR工具和基于LLM的竞争对手，以及最近收集的数据的额外实验（避免数据泄漏）进一步显示了我们在调试方面的泛化和有效性与基础LLM相比。我们的代码和生成的补丁可供进一步研究和复制。
+

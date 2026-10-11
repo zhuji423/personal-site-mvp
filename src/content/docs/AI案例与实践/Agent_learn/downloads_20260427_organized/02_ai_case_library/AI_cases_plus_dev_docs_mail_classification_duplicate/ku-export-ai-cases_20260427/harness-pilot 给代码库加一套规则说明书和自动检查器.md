@@ -1,0 +1,1048 @@
+---
+title: "Add marketplace (HTTPS, no SSH key required)"
+description: "harness-pilot 给代码库加一套\"规则说明书\"和\"自动检查器\""
+date: "2026-04-28"
+category: "AI案例与实践"
+source: "F:\\百度工作\\02_Agent_learn\\Agent_learn\\downloads_20260427_organized\\02_ai_case_library\\AI_cases_plus_dev_docs_mail_classification_duplicate\\ku-export-ai-cases_20260427\\harness-pilot 给代码库加一套规则说明书和自动检查器.md"
+---
+harness-pilot 给代码库加一套"规则说明书"和"自动检查器"
+
+#### 🧑‍🏫 案例作者：[@杨桐](https://ku.baidu-int.com?t=mention&mt=contact&id=422c2e80-f2cb-11f0-80f0-91056ee5134c)
+#### 🎬 案例分类：开发
+#### 🔧 使用工具：Claude
+#### 📒 案例概要：Harness Pilot为代码库添加AI可读的规则与自动检查，确保AI Agent在架构约束内可靠协作，防止违规。
+> 项目地址: [https://github.com/atom-yt/harness-pilot](https://github.com/atom-yt/harness-pilot)
+> [harness-pilot 使用文档](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/jPVgeifnCf/FNNiSIA8nW/LZqyuSmdEmfsFt?t=mention&mt=doc&dt=doc)
+> [harness-pilot 设计文档](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/jPVgeifnCf/FNNiSIA8nW/h4emT7DoMde4w8?t=mention&mt=doc&dt=doc)
+> [Harness Pilot Handoff 机制设计](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/jPVgeifnCf/FNNiSIA8nW/lJPozj8u2kY3Mv?t=mention&mt=doc&dt=doc)
+
+
+```
+插件安装方式：
+# Add marketplace (HTTPS, no SSH key required)
+/plugin marketplace add https://github.com/atom-yt/harness-pilot.git
+
+# Install plugin
+/plugin install harness-pilot@harness-pilot
+```
+
+
+---
+
+## **一、这是什么？**
+**一句话概括**：给代码库加一套"规则说明书"和"自动检查器"，专门给 AI Agent 用。
+
+更形象的比喻：
+
+```
+想象你是一个新来的工程师，第一天上班。
+
+没有 Harness 的情况：
+  你不知道 internal/types/ 不能 import internal/config/
+  你不知道新文件该放哪个目录
+  你不知道这个项目有什么"潜规则"
+  于是你开始写代码，写完被 CI 打回来，修完又被其他规则打回来……
+
+有 Harness 的情况：
+  一进门就看到 .harness/ 目录 —"你好，这是我们的地图和规则"
+  打开文档看到分层规则 —"这是我们的建筑结构"
+  写代码前跑一下检查 —"这面墙能不能拆？不能，那我换个方案"
+  验证通过了再提交 —"好的，这个改动没问题"
+```
+### **为什么需要这个？**
+让我们从一个真实场景说起。
+
+```
+用户: "帮我加一个用户认证功能"
+
+Agent: [思考] "好的，我需要创建一个类型文件..."
+       [写代码] 200 行代码完成
+       [运行 lint] ❌ 失败！types 不能 import config
+       [修复] 移动代码到合适位置
+       [再运行 lint] ❌ 又失败！另一个违规
+       [循环 3 次] 上下文窗口被错误日志填满，Agent 开始"遗忘"目标
+```
+**这不是 Agent 不够聪明** —— 这是 Agent **看不见**。
+
+### **看不见的东西在哪里？**
+代码库中的约束往往是"隐形"的：
+
+* "大家都知道 internal/api 不应该 import internal/ui" —— 但新人不知道，Agent 也不知道
+* "这个包只能被 Layer 3 以下的东西 import" —— 写在 Wiki 上，AI 读不到
+* "新功能必须先写测试" —— 每个人都"默认知道"，没人写下来
+
+### **换个角度想问题**
+如果换成一个新入职的工程师，他可能也不熟悉代码库，但他至少会问：
+
+```
+"这个文件应该放在哪个目录？"
+"这样 import 可以吗？"
+"有没有什么命名规范要注意？"
+```
+他在行动前寻求验证。
+
+**AI Agent 不会**。它**直接干**。
+
+---
+
+## 二、业界现状
+现在大家是怎么让 AI Agent "守规矩"的？
+
+|方案|怎么做|实际体验|
+|-|-|-|
+|**System Prompt**|在 Prompt 里写一堆规则|规则太多了装不下，而且随代码变化，永远追不上|
+|**RAG 检索**|从 Wiki 里找相关规则|检索可能不准，规则还是靠"自觉遵守"，等于没有|
+|**CI/CD Lint**|代码提交后检查|发现太晚了！代码已经写完了，重写很累|
+|**项目级规范文件**|写个 AGENTS.md 文件|Agent 能看见，但遵守全靠"自觉"，不强制|
+|**ESLint 等工具**|检查代码风格|只能检查格式，检查不了架构约束|
+
+### 核心矛盾："教" vs "验"
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      "教" vs "验"                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                         │
+│   System Prompt      →  教 Agent 怎么做                   │
+│   RAG               →  教 Agent 哪有知识                 │
+│   CI/CD Lint        →  验 Agent 做得对不对（但时机太晚）     │
+│                                                         │
+│   Harness            →  让 Agent 自己验证做得对不对                 │
+│                     （在写代码之前，而非之后）                │
+└─────────────────────────────────────────────────────────────┘
+```
+### Harness 的不同
+|维度|别人这么做|Harness 这么做|
+|-|-|-|
+|规则在哪|Wiki、Prompt|代码库里，Git 跟踪|
+|什么时候检查|写完代码后|**写代码前**|
+|靠什么保证|靠 Agent 自觉|靠**自动化脚本**|
+
+就像开车：
+
+```
+别人的方案：写好《驾驶手册》，让司机背下来
+Harness 的方案：装个防撞系统，撞之前就刹车
+```
+---
+
+## 三、项目愿景
+让 AI Agent 在代码库中**可靠协作**，而不是反复犯错。
+
+### 能解决什么问题？
+|问题|Harness 的解法|
+|-|-|
+|新 Agent 不懂项目规矩|一看 .harness/ 就明白|
+|规则不断变化，Agent 跟不上|规则在 Git 里，session-start hook 自动检查新鲜度|
+|写了半天代码才发现违规|写之前先验证，不行就别写|
+|同样的错误反复出现|Ralph Wiggum Loop 自动修复，记忆系统避免再犯|
+
+### 一个更本质的观点
+**仓库是 Agent 的操作系统**
+
+```
+CPU 很强大，但没有操作系统就是一块高速却无方向的芯片：
+  不知道硬盘在哪
+  不知道网络协议是什么
+  不知道哪些内存地址可以写
+
+LLM 也一样：
+  推理能力很强
+  但不知道你的 internal/types/ 不能 import internal/config/
+  不知道新文件该放哪个目录
+
+Harness 就是给它装的"操作系统"
+```
+### 几条关键原则
+1. **仓库是唯一的事实来源**
+2. IM里的讨论、约定、架构师脑子里的蓝图，对 Agent 来说都不存在。
+3. 不在仓库里，Agent 就看不见；看不见就会违反。
+4. 所以第一步是把一切编码到仓库中：架构决策、层级约束、命名规范。
+5. 不是写在 Wiki 里，不是发在群里，而是作为版本化的文件提交到 Git。
+6. `.harness/`** 是地图，不是手册**
+7. 很多团队的第一反应是写一个巨大的规则文件，500 行，什么都有。
+8. 问题是：当一切都重要时，什么都不重要。
+9. 500 行的指令文件挤占了 Agent 宝贵的上下文窗口，留给实际任务的空间反而少了。
+10. `.harness/docs/` 里的文档应该结构清晰，按需加载，详细内容分文件组织，Agent 只读它需要的部分。
+11. **只管架构边界，不管怎么实现**
+12. Harness 不规定"你必须用这个设计模式"或"函数必须这样写"，它只管依赖方向。
+13. 大多数代码库的包和模块之间存在自然的依赖方向：
+
+    * 类型定义被所有人 import
+    * 业务逻辑依赖类型但不依赖 HTTP 层
+    * HTTP handler 依赖业务逻辑
+
+14. Harness 把这种自然方向编码为层级编号，规则就一条：高层可以 import 低层，反过来不行。
+15. 在这个边界之内怎么实现，随便。
+16. **人的角色变了**
+17. 以前是人写代码、AI 辅助补全；现在反过来了——人设计系统（架构、约束、验证规则），Agent 在系统内执行。
+18. 人的价值从"写出正确的代码"变成了"设计出让 Agent 能可靠产出正确代码的环境"。
+
+---
+
+## 四、怎么用？
+### 场景一：看一个项目靠不靠谱
+```
+你说：分析一下这个项目
+
+Agent 输出：
+=== Harness 健康度报告 ===
+总分: 35/100 (需要改进)
+
+📋 文档覆盖率: 20/100
+  ❌ 缺失 .harness/docs/ARCHITECTURE.md（架构文档）
+  ❌ 缺失架构约束脚本
+
+🏗️ 架构约束: 0/100
+  ❌ 没有层级依赖检查
+
+📏 质量规则: 0/100
+  ❌ 没有代码质量检查
+
+🎯 建议:
+  用 Harness 给这个项目加点约束吧
+```
+就像体检报告，一眼看出哪里有问题。
+
+### 场景二：给项目加约束
+```
+你说：帮我给这个项目加 Harness
+
+Agent 会问你几件事：
+  1. 检测到 TypeScript + Next.js，对吗？
+  2. 哪些组件需要？（文档？检查脚本？任务追踪？）
+  3. 推荐的层级规则是这样，改吗？
+  4. 质量规则要加什么？
+
+确认后生成：
+  ✓ .harness/docs/ARCHITECTURE.md（架构说明）
+  ✓ .harness/docs/DEVELOPMENT.md（开发指南）
+  ✓ .harness/scripts/lint-deps.ts（依赖检查）
+  ✓ .harness/scripts/validate.ts（统一验证）
+  ✓ .harness/memory/（经验记忆）
+  ✓ .harness/hooks/post-commit（git post-commit hook）
+```
+### 场景三：检查代码对不对
+```
+你说：验证一下刚才的代码
+
+Agent 输出：
+=== 验证结果 ===
+✗ 发现 2 个问题：
+
+1. src/handler/user.ts
+   ❌ imports internal/config（层级违规）
+   建议：把 config 当参数传进来
+
+2. src/api/auth.ts
+   ❌ imports src/handler/helper.ts（互引）
+   建议：把 helper 移到公共层
+```
+就像有个自动化的 code reviewer，在你提交前就发现问题。
+
+### 场景四：从失败中学习
+```
+你说：最近有什么反复出现的问题？
+
+Agent 输出：
+=== 失败模式分析 ===
+
+模式 1: internal/cache 没在层级里（7 次）
+  问题：这个包存在但没被检查覆盖
+  建议：把它加到 Layer 1
+
+模式 2: 添加 API 流程不一致（12 次）
+  问题：每次做法都不一样
+  建议：记录一个标准 5 步流程
+
+模式 3: 错误信息看不懂（5 次）
+  问题：只报错不说怎么修
+  建议：把错误消息改得清楚点
+
+要自动修复吗？（置信度 > 80%）
+```
+就像有个经验丰富的老工程师，定期总结团队踩过的坑。
+
+### 场景五：自动化审查-修复循环（Ralph Wiggum Loop）
+```
+你说：帮我实现这个功能
+
+Agent 执行 harness-apply 后自动进入 Ralph Wiggum Loop：
+
+=== Ralph Wiggum Loop（第 1/3 轮）===
+
+🔍 code-reviewer 审查:
+  ❌ src/handler/auth.ts 缺少错误路径测试
+  ⚠️ 函数 processToken 命名不够清晰
+
+🔧 自动修复:
+  ✓ 补充错误路径测试
+  ✓ 重命名 processToken → validateAndDecodeToken
+
+🧪 验证:
+  ✓ build: 通过
+  ✓ lint-arch: 通过
+  ✓ test: 通过
+
+=== Ralph Wiggum Loop 完成（1 轮）===
+所有问题已自动修复并验证通过
+```
+code-reviewer 融合了架构验证（原 harness-guardian）能力，同时检查架构合规性和代码质量。每轮最多重试 3 次，如果所有问题自动修复则直接完成。
+
+### 场景六：增量更新（Reentrant Apply）
+### 场景七：跨会话任务恢复（Handoff 机制）
+```
+你：帮我给这个项目加 Harness，包括完整验证
+
+Agent 执行中...
+[执行 40+ 次 tool call 后]
+
+=== 上下文接近限制 ===
+检测到 tokens: 124,500 / 200,000
+触发 Handoff 机制
+
+=== Handoff 触发 ===
+任务 ID: task_20260424_143022_a1b2c3d4
+状态: Ralph Wiggum Loop - 第 1 轮完成，验证失败
+
+已保存到: .harness/handoffs/sess_20260424_143022/
+  - agent-state.json (前一个 agent 的状态)
+  - context.json (关键决策和假设)
+  - resume.json (恢复指令)
+
+待修复问题:
+  1. src/handler/auth.ts - 缺少错误路径测试
+  2. src/handler/auth.ts - 架构违规（导入 internal/config）
+
+=== 会话结束 ===
+
+恢复方式:
+  /harness-apply --resume
+  或说: "继续之前的任务"
+```
+第二天，你继续工作：
+
+```
+你：继续之前的任务
+
+Agent: 检测到未完成任务 task_20260424_143022_a1b2c3d4
+
+=== 恢复摘要 ===
+上次位置: Ralph Wiggum Loop - 第 1 轮
+关键决策:
+  - 使用 Layer 3 放置 auth handler
+  - 实现 JWT 验证
+
+加载上下文... ✓
+
+=== 第 2 轮 Ralph Wiggum Loop ===
+✓ Code reviewer: 发现 2 个问题
+✓ Auto-fix: 修复错误路径测试，架构问题需手动修复
+✓ 验证: build 通过, lint-arch 通过, test 通过
+
+=== 任务完成 ===
+总轮数: 2
+修改文件: 3
+测试结果: 全部通过
+```
+**Handoff 的核心价值：**
+
+|问题|Handoff 的解法|
+|-|-|
+|上下文被错误日志填满|定期清空，从干净状态重启|
+|Agent "遗忘"最初目标|通过 artifacts 持久化关键决策|
+|长任务单会话跑不完|跨会话接力，任意时间点可恢复|
+|恢复后不知道从哪开始|next-steps.json 明确下一步|
+
+**文件结构：**
+
+```
+.harness/
+├── tasks/                    # 任务 artifacts
+│   ├── {task-id}/
+│   │   ├── task.json         # 任务状态和进度
+│   │   ├── checkpoint.json    # 检查点快照
+│   │   └── next-steps.json   # 下一步骤
+│   └── .current              # 当前任务符号链接
+└── handoffs/                 # 跨会话 handoffs
+    ├── {session-id}/
+    │   ├── agent-state.json  # 前一个 agent 的状态
+    │   ├── context.json      # 上下文摘要（关键决策、假设）
+    │   └── resume.json      # 恢复指令
+    └── .latest              # 最新 handoff 符号链接
+```
+就像接力赛——跑不动了就把接力棒交给下一个人，不用从头重新跑。
+
+```
+你说：项目结构变了，更新一下 Harness
+
+Agent 输出：
+=== harness-apply: 增量更新 ===
+
+读取 .harness/manifest.json ...
+  上次应用: 2026-04-20T14:30:00Z
+  状态: applied
+
+检测变更:
+  [CHANGED] 新增 src/services/payment/ 目录
+  [CHANGED] Layer 3 新增 payment 模块
+  [UNCHANGED] 自定义规则 .harness/rules/ （保留）
+
+更新内容:
+  ✓ 更新 lint-deps 层级映射（+payment: Layer 3）
+  ✓ 更新 .harness/docs/ARCHITECTURE.md
+  ✓ 保留用户自定义规则（不覆盖）
+  ✓ 更新 manifest.json 状态
+
+manifest.json 记录完整状态，增量更新不会覆盖你的自定义规则。
+```
+---
+
+## 五、设计思路
+### 四种记忆系统
+就像人一样，AI 也需要三种记忆：
+
+|记忆类型|人的类比|AI 的类比|
+|-|-|-|
+|**情景记忆**|"上次踩坑是 macOS 的问题"|记录具体问题和解决方法|
+|**程序记忆**|"做披萨要先揉面再烤"|记录标准操作流程|
+|**失败记忆**|"我总在 deadline 前熬夜"|分析失败模式，避免再犯|
+|**跨会话记忆**|"上次任务做到一半，今天接着来"|通过结构化 artifacts 持久化状态，跨会话接力执行|
+
+### 文件结构长什么样？
+```
+my-project/
+└── .harness/
+    ├── manifest.json          ← 状态追踪（reentrant apply 用）
+    ├── docs/
+    │   ├── ARCHITECTURE.md    ← 项目架构、层级规则
+    │   └── DEVELOPMENT.md     ← 开发命令、怎么测试
+    ├── scripts/
+    │   ├── lint-deps.*        ← 检查依赖方向对不对
+    │   ├── lint-quality.*     ← 检查代码质量
+    │   ├── verify/            ← 端到端功能验证
+    │   └── validate.*        ← 统一验证流程
+    ├── hooks/
+    │   └── post-commit       ← git post-commit 触发验证
+    ├── memory/            ← 三种记忆
+    ├── tasks/             ← 任务状态和检查点（handoff 用）
+    │   ├── {task-id}/
+    │   │   ├── task.json
+    │   │   ├── checkpoint.json
+    │   │   └── next-steps.json
+    │   └── .current
+    ├── handoffs/          ← 跨会话 handoffs
+    │   ├── {session-id}/
+    │   │   ├── agent-state.json
+    │   │   ├── context.json
+    │   │   └── resume.json
+    │   └── .latest
+    ├── trace/             ← 失败轨迹
+    └── rules/
+        └── common/
+            └── safety.md  ← AI 安全约束
+```
+所有生成文件都集中在 `harness/` 目录下，不污染项目根目录。`manifest.json` 记录当前状态，支持增量更新；`tasks/` 和 `handoffs/` 支持跨会话任务恢复。
+
+### 在动手之前先问"能不能做"
+这是最关键的理念转变。
+
+Agent 的工作流通常是：写代码 → 跑测试 → 发现错误 → 修复 → 再跑测试……
+
+当一个层级违反在 50 行代码写完后才被 linter 抓到，修复代价很大。
+
+而如果写代码前先问一句"这样做合法吗"，两次交互就够了：
+
+```
+python3 .harness/scripts/verify_action.py --action "create file internal/types/user.go"
+# ✓ VALID: internal/types/ is Layer 0, user.go follows naming convention
+
+python3 .harness/scripts/verify_action.py --action "import internal/core from internal/handler"
+# ✗ INVALID: internal/handler (L4) cannot import internal/core (L3)
+#   Fix: handler should depend on core through interfaces
+```
+不是每个操作都需要预验证。但只要涉及"在新位置创建文件"或"添加跨包 import"，就该先验证。
+
+### 验证顺序有讲究
+```
+build → lint-arch → test → verify
+  │        │         │       │
+  │        │         │       └─ 端到端功能验证
+  │        │         └─ 单元/集成测试
+  │        └─ 架构和质量合规
+  └─ 代码能否编译
+```
+很多人忽略了最后一步 `verify`。
+
+build + lint + test 能覆盖大部分问题，但有一类问题它们抓不到：功能层面的正确性。
+
+测试通过了不代表功能是对的——测试本身可能覆盖不全，或者 Agent 写的测试恰好绕过了关键路径。
+
+verify 是项目级别的端到端功能验证——不是"函数返回值对不对"，而是"用户执行这个操作，最终结果对不对"。
+
+### 踩过坑后的几条经验
+1. **故意引入违规来测试 lint**
+
+    * 加一个跨层 import 确认能被检测到
+    * 如果 lint 没报错说明护栏是纸糊的
+
+2. **永远不要禁用 lint 规则来"解决"问题**
+
+    * Agent 有时候会想绕过规则（比如注释掉 lint 配置）
+    * 应该改代码而不是改规则
+
+3. **测试不需要每次跑全量**
+
+    * executor 支持只跑受影响的包，速度快很多
+
+---
+
+## 六、上下文是最贵的资源
+如果这篇文章你只记住一件事，记这个：
+
+**中等复杂度以上的任务，****协调者绝不写代码****。**
+
+### 为什么？
+因为 LLM 的上下文窗口是有限的。
+
+Agent 执行长任务时，窗口里慢慢堆起来的是代码 diff、编译错误、测试输出、lint 报告、重试记录……
+
+到第 40 次 tool call，早期的关键信息已经被压缩或丢弃了。Agent 开始"忘记"最初的架构决策，做出跟前面矛盾的改动。
+
+### 解法：两层 Agent
+```
+协调者（Coordinator）: 只管规划、委派、汇总，一行代码都不碰
+
+执行者（子代理）: 每次从干净的上下文开始，拿到精确的 prompt，干完就释放
+```
+信息经过了压缩和筛选，而不是无差别地堆在上下文里。
+
+### 最常见的陷阱："只是快速改一下"
+协调者发现一个小问题，心想"这么简单的东西不用启子代理，我直接改了"。
+
+一次编辑变成了五次（因为牵扯出其他地方），五次变成二十次，上下文就被消耗殆尽了。
+
+如果你发现协调者正在用 Edit 或 Write 工具修改源代码，立刻停下来，启动子代理。
+
+**没有例外。**
+
+### 委派时的一个杠杆：不是所有任务都需要最强模型
+```
+简单任务（改 typo、重命名） → Haiku，快又便宜
+复杂任务（重构、架构变更）   → Opus，质量第一
+代码检索（在大型代码库找文件） → Gemini Flash，速度第一
+```
+一个中等复杂度的功能开发，可能会同时调度三四个不同模型的子代理。
+
+总成本可以降低 60-70%，复杂任务的质量不打折扣。
+
+### 交叉 review
+机械化验证（lint、test、verify）能抓到规则层面的问题，但抓不到逻辑合理性。
+
+代码编译通过、测试全绿、架构合规，但实现思路可能有隐患：
+
+* 竞态条件
+* 边界遗漏
+* 不必要的复杂度
+* 命名让人看不懂
+
+这些东西只有"另一双眼睛"才能发现。
+
+关键词是"不同模型"。用同一个模型既写代码又 review，它容易对自己的产出"视而不见"。
+
+换一个架构和训练数据都不同的模型来 review，思维盲区的重叠就小得多。
+
+---
+
+## 七、让 Harness 自己长大
+前面讲的 Harness 还是静态的——人定规则，Agent 遵守。
+
+但真正有意思的地方在于，Harness 能从 Agent 的失败里学东西。
+
+这个能力已经融合进 `harness-apply` skill 中——通过 Ralph Wiggum Loop（自动化审查-测试-修复循环）和记忆系统，Harness 在日常使用中持续进化。
+
+### Ralph Wiggum Loop
+```
+Agent 执行 harness-apply
+    ↓
+code-reviewer 审查（架构 + 代码质量）
+    ↓
+发现问题 → 自动修复
+    ↓
+重新验证（build → lint → test）
+    ↓
+通过 → 完成 / 未通过 → 下一轮（最多 3 轮）
+```
+每次 apply 完成后，code-reviewer 自动审查代码变更。如果发现问题，自动尝试修复并重新验证。最多循环 3 轮，确保产出质量。
+
+### 一个完整的闭环
+```
+Agent 执行
+    ↓
+Ralph Wiggum Loop 抓到问题
+    ↓
+记忆系统记录模式
+    ↓
+下次 apply 时自动加载经验
+    ↓
+下一个 Agent 受益
+```
+每次验证失败都被结构化地保存到 `.harness/trace/failures/`。
+
+记忆系统定期分析这些记录，找出模式和根因——比如发现 `internal/cache` 被 7 次违规 import，根因是它没被加入层级映射表，建议修复是把它加入 Layer 1。
+
+然后 harness-apply 在下次增量更新时自动整合这些改进。
+
+### 轨迹编译
+当同一类任务被成功执行了三次以上，而且步骤高度一致，这个模式就可以被"编译"成一个确定性脚本。
+
+比如"添加 API 端点"每次都是：
+
+1. 创建类型文件
+2. 写服务方法
+3. 加 handler
+4. 注册路由
+5. 写测试
+
+这个模式就可以被编译成 `make add-endpoint NAME=foo`。
+
+以后再做同类任务直接跑脚本，LLM 都省了。
+
+这是个棘轮效应：每一个被编译的成功模式都变成了永久基础设施，Agent 被释放去处理真正需要创造力的新问题。
+
+---
+
+## 八、业界在做什么？
+AI Coding Harness 领域有不少成熟方案，各有侧重点。
+
+### 主流工具对比
+|工具|公司/团队|核心特点|
+|-|-|-|
+|**Claude Code**|Anthropic|Planner-Executor 模式、跨上下文窗口的检查点、Git Worktree 隔离|
+|**GitHub Copilot**|GitHub|IDE 集成、代码补全、自动 PR 摘要|
+|**OpenClaw**|OpenAI|Reflexion 执行循环、浏览器环境、自纠错|
+|**AutoGPT**|开源社区|ReAct 循环、自主任务拆解、工具链编排|
+|**LangChain DeepAgents**|LangChain|中间件层、状态管理、LangSmith 追踪|
+|**SWE-Agent**|Princeton|沙箱代码执行、完整 harness 可检视|
+
+### 三种执行循环模式
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  执行循环模式对比                    │
+├─────────────────────────────────────────────────────────────┤
+│                                                         │
+│   ReAct (思考-行动)                                     │
+│   Reason → Act → Observe → Repeat                     │
+│   适用: 快速任务、简单修改                              │
+│                                                         │
+│   Reflexion (行动-反思)                                  │
+│   Act → Observe → Reflect → Improve → Act              │
+│   适用: 需要自纠错的场景                               │
+│                                                         │
+│   Planner-Executor (规划-执行)                            │
+│   Plan → Checkpoint → Execute → Verify → Repeat       │
+│   适用: 长任务、需要恢复能力                              │
+└─────────────────────────────────────────────────────────────┘
+```
+### 内存管理策略
+|策略|怎么做|好处|
+|-|-|-|
+|**KV Cache Locality**|高频访问的数据保持在缓存中|减少重复计算|
+|**Context Condensification**|保留目标、进度、关键文件，丢弃噪声|控制上下文膨胀|
+|**Filesystem Memory**|中间状态写入文件，必要时读取|跨会话持久化|
+|**Workspace Isolation**|用 Git Worktree 沙箱化执行|失败可回滚|
+
+### 测试验证机制
+|机制|触发时机|覆盖范围|
+|-|-|-|
+|**静态 Lint**|写代码后|架构约束、代码风格|
+|**单元测试**|编写代码时|函数/方法正确性|
+|**集成测试**|功能完成后|模块间交互|
+|**端到端验证**|阶段完成 / PR 时|用户路径|
+|**JiT 测试生成**|PR 评审阶段|补充缺失测试|
+
+### Meta 的即时测试 Harness
+Meta 研究发现，在 PR 阶段自动生成测试，能将 AI 代码缺陷检出率提升 **4 倍**。
+
+|指标|传统测试|JiT Test Harness|
+|-|-|-|
+|测试覆盖率|60-70%|85-95%|
+|缺陷检出率|1x|4x|
+
+关键思路：不是依赖人工维护的静态测试集，而是根据代码变更动态生成补充测试。
+
+### LangChain 的中间件理念
+LangChain DeepAgents 的核心思想：**LLM 和工具之间加一层可检查点**。
+
+```
+LLM → Middleware → Tools → Environment → Eval
+```
+每层都可以插入验证逻辑，失败了不用从头重来，而是回滚到上一个检查点。
+
+### 腾讯云的规则即测试
+腾讯云提出：**从代码约束自动派生测试**。
+
+* 分支解析 → `if (x > 0)` 生成边界测试
+* 条件还原 → 复杂条件拆分独立用例
+* Mock 策略 → 自动识别外部依赖
+
+让测试和代码同步演进，而不是事后补作业。
+
+---
+
+## 九、从今天开始实践
+好消息：Harness 不是全有或全无的。
+
+哪怕不搭完整的基础设施，一个基本的 `.harness/` 目录就能让 AI 协作体验好一截。
+
+### 新项目
+最简单——告诉 harness-apply 你要做什么，它会问几个基本问题，然后直接生成全套基础设施到 `.harness/` 目录。
+
+### 老项目
+也不难，harness-apply 会扫描代码库、分析 import 关系、推断层级映射，生成反映代码现状的文档。如果之前已经 apply 过，manifest.json 会追踪状态，增量更新时不会覆盖你的自定义规则。
+
+### 最小起步
+不管哪种情况，最小起步都一样——运行 harness-apply，它会在项目中创建 `.harness/` 目录：
+
+```
+.harness/
+├── manifest.json              ← 状态追踪
+├── docs/
+│   ├── ARCHITECTURE.md        ← 架构总览、分层规则、数据流
+│   └── DEVELOPMENT.md         ← 构建、测试、lint 命令
+├── scripts/
+│   └── lint-deps.*            ← 依赖方向检查
+└── rules/
+    └── common/
+        └── safety.md          ← AI 安全约束
+```
+所有生成文件都在 `.harness/` 下，不污染项目根目录。Agent 通过 session-start hook 自动发现并加载这些文件。
+
+### 建议的节奏
+* 今天先跑 harness-apply 把基本的 `.harness/` 建出来
+* 这周调整 lint-deps 脚本把层级规则定下来
+* 这个月搭完整的验证管道
+* 之后让 Ralph Wiggum Loop 和记忆系统自动积累经验，Harness 跟着代码一起长
+
+最佳实践是先用 harness-apply 把 Harness 建到 70 分以上，再开始日常开发。
+
+---
+
+## 十、总结
+**核心思想**：与其教 AI Agent 怎么做，不如让它**自己验证做得对不对**。
+
+靠代码、linter、测试来保证正确性，而不是靠 LLM 的"直觉"。
+
+这些机械化检查不会出错，不会遗忘，也不会被上下文压缩掉。
+
+### 回到开头那个场景
+装了 Harness 之后，同样的任务会变成这样：
+
+```
+Agent 启动
+  ↓
+session-start hook 检查 .harness/ 新鲜度，加载相关文档
+  ↓
+列出执行计划，你扫一眼批准
+  ↓
+harness-apply 开始执行，每个结构性操作前先跑预验证
+  ↓
+层级违反在写代码前就被拦住了
+  ↓
+完成后 Ralph Wiggum Loop 自动审查-修复（最多 3 轮）
+  ↓
+上下文接近限制？触发 Handoff，保存状态到 artifacts
+  ↓
+新会话恢复：从 artifacts 加载上下文，继续执行
+  ↓
+任务做完，经验教训记下来，下一个 Agent 接着用
+```
+Agent 不需要更聪明——它只是能看见更多了。
+
+也不用担心长任务跑不完——Handoff 机制让它可以跨会话接力，就像跑马拉松可以换人接棒。
+
+### 最后一句
+说到底，**环境设计的投入回报远高于 prompt 调优**。
+
+一套好的 Harness 能让普通模型产出可靠的代码，而没有 Harness 的顶级模型照样会在同样的坑里反复栽。
+
+搭建的前期成本不高——一个下午就能用 harness-apply 建好基本的 `.harness/` 目录和 lint 脚本。
+
+但它的价值会随着时间复利式增长：记忆越来越丰富，lint 规则越来越完善，越来越多的操作模式被编译成确定性脚本。
+
+半年后回头看，你的仓库已经变成了一个高度适配你们团队工作方式的 Agent 运行环境，任何新加入的人（或新会话的 Agent）都能立刻进入状态。
+
+**竞争优势不再是 Prompt，而是 Trajectory。**
+
+这些积累，换个模型复制不来。
+
+# 使用效果
+
+
+## 执行harness-analyze        
+```
+ /harness-pilot:harness-analyze
+
+⏺ I'm using harness-analyze to perform a dryrun analysis of this project.
+
+  Let me gather the project information and run the analysis checks.
+
+⏺ Searched for 8 patterns, read 2 files (ctrl+o to expand)
+
+⏺ Bash(go test -cover ./... 2>&1 | grep -E "ok|coverage" | head -20)
+  ⎿     github.com/atom-yt/claude-code-go/cmd/claude            coverage: 0.0% of statements
+     ok         github.com/atom-yt/claude-code-go/internal/agent        0.529s  coverage: 68.0% of statements
+     ok         github.com/atom-yt/claude-code-go/internal/api  0.431s  coverage: 28.5% of statements
+     … +17 lines (ctrl+o to expand)
+
+⏺ Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Bash(command -v claude >/dev/null 2>&1 && claude plugin list 2>/dev/null | grep -q "superpowers" && echo "INSTALLED" || echo "NOT_INSTALLED")
+  ⎿  INSTALLED
+
+⏺ ╔══════════════════════════════════════════════════╗
+  ║          Harness Health Report                   ║
+  ║          Project: claude-code-go                 ║
+  ║          Score: 10/100 (D)                       ║
+  ╠══════════════════════════════════════════════════╣
+  ║                                                  ║
+  ║  Category          Score   Status                ║
+  ║  ─────────────────────────────────────────────── ║
+  ║  Documentation      0/100  ░░░░░░░░░░  Poor      ║
+  ║  Architecture       0/100  ░░░░░░░░░░  Poor      ║
+  ║  Quality Rules      0/100  ░░░░░░░░░░  Poor      ║
+  ║  Test Coverage     50/100  █████░░░░░  Fair      ║
+  ║  Validation         0/100  ░░░░░░░░░░  Poor      ║
+  ║                                                  ║
+  ╠══════════════════════════════════════════════════╣
+  ║  Details                                         ║
+  ║  ─────────────────────────────────────────────── ║
+  ║  [x] .harness/docs/ARCHITECTURE.md              ║
+  ║  [x] .harness/docs/DEVELOPMENT.md               ║
+  ║  [x] .harness/docs/PRODUCT_SENSE.md             ║
+  ║  [x] .harness/scripts/lint-deps.go               ║
+  ║  [x] .harness/scripts/lint-quality.go            ║
+  ║  [x] .harness/scripts/validate.go                ║
+  ║                                                  ║
+  ║  Project Information:                            ║
+  ║  Language: Go 1.22.10                           ║
+  ║  Framework: cobra, bubbletea, lipgloss, glamour ║
+  ║  Total code: ~19,912 lines                       ║
+  ║  Test files: 41 test packages                    ║
+  ║                                                  ║
+  ║  Import Analysis:                                ║
+  ║  Total imports: 100+ blocks across codebase      ║
+  ║  Packages: 23 internal packages                 ║
+  ║  Potential violations: None detected            ║
+  ║  Circular dependencies: No                      ║
+  ║                                                  ║
+  ║  Test Coverage (selected):                      ║
+  ║  sandbox: 95.1% | pathutil: 88.4% | compact: 81.6%║
+  ║  cmdutil: 82.6% | permissions: 79.7%            ║
+  ║  agent: 68.0% | hooks: 66.0%                    ║
+  ║  api: 28.5% | memory: 22.8% | prompt: 21.1%    ║
+  ║  mcp: 5.6% | Several at 0%                       ║
+  ║                                                  ║
+  ╠══════════════════════════════════════════════════╣
+  ║  Recommendations                                 ║
+  ║  1. Run harness-apply to generate infrastructure ║
+  ║  2. Create ARCHITECTURE.md defining layer rules   ║
+  ║  3. Add lint-deps.go to enforce import boundaries ║
+  ║  4. Increase test coverage for api/mcp packages   ║
+  ║  5. Migrate .claude/rules/ to .harness/docs/      ║
+  ║                                                  ║
+  ╠══════════════════════════════════════════════════╣
+  ║  Toolchain                                       ║
+  ║                                                  ║
+  ║  [Installed] Superpowers — planning + review    ║
+  ║    Already installed, ready for integration      ║
+  ║                                                  ║
+  ║  [Recommended] harness-apply — generate harness  ║
+  ║    Why: Automated review-test-fix cycle for      ║
+  ║         continuous quality enforcement           ║
+  ║                                                  ║
+  ║  Recommended workflow:                           ║
+  ║  analyze → apply → develop → apply (loop) → ship ║
+  ║                                                  ║
+  ╚══════════════════════════════════════════════════╝
+
+  ---
+  Would you like to:
+  1. Run harness-apply to generate/update harness infrastructure
+  2. Review specific recommendations in detail
+
+  Choose an option or describe what you'd like to do next.
+```
+## 执行harness-apply  
+```
+❯ /harness-pilot:harness-analyze                                                                                                               
+
+⏺ I'm using harness-analyze to perform a dryrun analysis of this project.
+
+⏺ Bash(pwd)
+  ⎿  /Users/yangtong07/Desktop/code/llm-agent/claude-code-go
+
+⏺ Bash(git rev-parse --git-dir)
+  ⎿  .git
+
+⏺ Searched for 4 patterns, read 1 file (ctrl+o to expand)
+
+⏺ Bash(go test -cover ./... 2>&1 | grep -E "(^ok|^FAIL|coverage:)" | head -30)
+  ⎿     github.com/atom-yt/claude-code-go/cmd/claude            coverage: 0.0% of statements
+     ok         github.com/atom-yt/claude-code-go/internal/agent        (cached)        coverage: 68.0% of statements
+     ok         github.com/atom-yt/claude-code-go/internal/api  (cached)        coverage: 28.5% of statements
+     … +18 lines (ctrl+o to expand)
+
+⏺ Read 1 file (ctrl+o to expand)
+
+⏺ Bash(find . -name "*.go" -type f | xargs stat -f "%m" 2>/dev/null | sort -rn | head -1)
+  ⎿  1776924231
+
+⏺ Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Bash(go run .harness/scripts/lint-deps.go 2>&1 | tail -20)
+  ⎿  ✓ No layer architecture violations found
+
+⏺ Bash(go run .harness/scripts/lint-quality.go 2>&1 | tail -20)
+  ⎿  ✓ No quality issues found
+
+⏺ Searched for 1 pattern (ctrl+o to expand)
+
+⏺ ╔══════════════════════════════════════════════════╗
+  ║          Harness Health Report                   ║
+  ║          Project: claude-code-go                 ║
+  ║          Score: 91/100 (A - Excellent)           ║
+  ╠══════════════════════════════════════════════════╣
+  ║                                                  ║
+  ║  Category          Score   Status                ║
+  ║  ─────────────────────────────────────────────── ║
+  ║  Documentation     100   ███████████  Excellent  ║
+  ║  Architecture      100   ███████████  Excellent  ║
+  ║  Quality Rules     100   ███████████  Excellent  ║
+  ║  Test Coverage      54   ██████░░░░░   Fair      ║
+  ║  Validation        100   ███████████  Excellent  ║
+  ║                                                  ║
+  ╠══════════════════════════════════════════════════╣
+  ║  Details                                         ║
+  ║  ─────────────────────────────────────────────── ║
+  ║  [✓] .harness/docs/ARCHITECTURE.md             ║
+  ║  [✓] .harness/docs/DEVELOPMENT.md              ║
+  ║  [✓] .harness/docs/PRODUCT_SENSE.md            ║
+  ║  [✓] .harness/scripts/lint-deps.go             ║
+  ║  [✓] .harness/scripts/lint-quality.go          ║
+  ║  [✓] .harness/scripts/validate.go              ║
+  ║                                                  ║
+  ║  Audit:                                          ║
+  ║  Documentation freshness: ⚠️  STALE (older than source)║
+  ║  Lint coverage: ✓ All directories in layer mapping║
+  ║  Layer violations: 0 found                      ║
+  ║  Quality issues: 0 found                         ║
+  ║                                                  ║
+  ║  Import Analysis:                                ║
+  ║  Total imports: 83+                              ║
+  ║  Test files: 37                                  ║
+  ║  Layer violations: 0                             ║
+  ║  Circular dependencies: None detected           ║
+  ║                                                  ║
+  ║  Test Coverage (Highlights):                     ║
+  ║  sandbox: 95.1%  | taskstore: 91.6%             ║
+  ║  pathutil: 88.4% | cmdutil: 82.6%               ║
+  ║  subagent: 90.2% | permissions: 79.7%           ║
+  ║  agent: 68.0%     | hooks: 66.0%                 ║
+  ║  ─────────────────────────────────────────────── ║
+  ║  ⚠️  Packages with 0% coverage:                    ║
+  ║  cmd/claude, internal/commands, internal/config, ║
+  ║  internal/mcpresource, internal/runtime,         ║
+  ║  internal/tools (parent package)                  ║
+  ║                                                  ║
+  ╠══════════════════════════════════════════════════╣
+  ║  Recommendations                                 ║
+  ║  1. Update ARCHITECTURE.md to reflect recent     ║
+  ║     source changes (websearch, planmode, etc.)  ║
+  ║  2. Add tests for 0% coverage packages:          ║
+  ║     - internal/config (settings logic)          ║
+  ║     - internal/commands (slash command handlers) ║
+  ║     - cmd/claude (CLI entry point)               ║
+  ║  3. Commit pending harness changes (capabilities, ║
+  ║     websearch_test.go, .harness/)                ║
+  ║                                                  ║
+  ╠══════════════════════════════════════════════════╣
+  ║  Toolchain                                       ║
+  ║  [Recommended] harness-apply — update harness +   ║
+  ║                quality loop (Ralph Wiggum Loop)  ║
+  ║    Why: Automated review-test-fix cycle for       ║
+  ║         continuous quality enforcement           ║
+  ║                                                  ║
+  ║  Recommended workflow:                           ║
+  ║  analyze → apply → develop → apply (loop) → ship ║
+  ╚══════════════════════════════════════════════════╝
+
+  Key Findings:
+  - Harness infrastructure is comprehensive and fully functional
+  - Layer architecture is clean (0 violations across 100+ files)
+  - Quality rules are enforced and passing
+  - Main gap: Test coverage is uneven — 6 packages at 0%
+  - Documentation needs refresh to capture recent features (websearch, subagent, planmode, taskstore, runtime)
+
+  ---
+  Would you like to:
+  1. Run harness-apply to update harness infrastructure (refresh stale docs)
+  2. Review specific recommendations in detail
+  3. Proceed with committing pending changes
+
+  Choose an option or describe what you'd like to do next.
+
+✻ Cogitated for 3m 27s
+
+❯ /harness-pilot:harness-analyze                                                                                                               
+
+⏺ I've already completed the harness-analyze dryrun analysis for this project (see the health report above).
+                                                                                                                                  
+  Summary:
+  - Score: 91/100 (A - Excellent)                                                                                                              
+  - Documentation: ✓ Complete (ARCHITECTURE.md, DEVELOPMENT.md, PRODUCT_SENSE.md)
+  - Architecture: ✓ Clean (0 layer violations)                                                                                                 
+  - Quality Rules: ✓ Passing                                      
+  - Validation: ✓ All 5/5 checks passing
+  - Test Coverage: ⚠️  Mixed (54% average, 6 packages at 0%)
+
+  Audit Findings:
+  - Documentation is stale — ARCHITECTURE.md older than latest source changes
+  - Layer violations: 0
+  - Quality issues: 0
+
+  ---
+  Would you like to:
+  1. Run harness-apply to refresh the stale documentation and update harness
+  2. Review specific recommendations in detail
+  3. Proceed with committing pending changes
+```
+
+
+
+
+![](/personal-site-mvp/img/doc-placeholder.svg "")
+
+
+![](/personal-site-mvp/img/doc-placeholder.svg "")
+
+
+![](/personal-site-mvp/img/doc-placeholder.svg "")
+
+
+![](/personal-site-mvp/img/doc-placeholder.svg "")
+
+
+![](/personal-site-mvp/img/doc-placeholder.svg "")
+
+
+# [AI+社区首页](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/opdELIFv2_oFZg)
+## [📒 查看/分享更多案例](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/_U6EhhLx7F5_DI)
+更多厂内AI实践案例、案例投递入口
+
+## [📪 创作者投稿](https://ku.baidu-int.com/share/shr5MRDhohjq9dAlY9MCQ/fomaWTzCTogCK4wkc3&spaceId=spcC9AM3yK7rD)
+产研干货文章、AI洞察、个人AI技巧
+
+## [🔧 AI工具箱](https://tools.baidu-int.com/)
+厂内外热门工具，一键使用
+
+###### **🌟欢迎星标本文、评论区点赞、投币、留言**   [👗社区如流群](https://applink-infoflow.baidu.com/share/contact/open/?token=ZDbWqAs7nQEaXdmgxb6vizK7WFPKWNeibo75Ua-D0_M)    👆更多AI内容点击上方，即刻跳转

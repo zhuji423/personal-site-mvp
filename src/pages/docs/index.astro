@@ -1,0 +1,89 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/paths";
+
+const docs = await getCollection("docs");
+const byCategory = new Map<string, typeof docs>();
+for (const d of docs) {
+  const cat = d.data.category ?? "未分类";
+  if (!byCategory.has(cat)) byCategory.set(cat, []);
+  byCategory.get(cat)!.push(d);
+}
+const categories = [...byCategory.entries()]
+  .sort((a, b) => b[1].length - a[1].length)
+  .map(([name, items]) => ({
+    name,
+    count: items.length,
+    items: items.sort((a, b) => a.data.title.localeCompare(b.data.title, "zh")),
+  }));
+const index = categories.flatMap((c) =>
+  c.items.map((d) => ({
+    t: d.data.title,
+    d: d.data.description ?? "",
+    c: c.name,
+    u: sitePath(`docs/${d.id.replace(/\.md$/, "")}/`),
+  }))
+);
+---
+<BaseLayout title="文档库">
+  <h1>文档库</h1>
+  <p class="muted">共 {docs.length} 篇 · {categories.length} 个分类 · 按原始文件名收录</p>
+  <input id="doc-search" type="search" placeholder="搜索标题 / 描述 / 分类…" autocomplete="off" />
+  <div class="docs-layout">
+    <aside class="doc-cats" id="doc-cats">
+      {categories.map((c) => (
+        <button class="cat-btn" data-cat={c.name}>
+          <span>{c.name}</span><span class="badge">{c.count}</span>
+        </button>
+      ))}
+    </aside>
+    <div class="doc-list" id="doc-list">
+      {categories.map((c) => c.items.map((d) => (
+        <a class="card doc-card" data-cat={c.name} href={sitePath(`docs/${d.id.replace(/\.md$/, "")}/`)}>
+          <h3>{d.data.title}</h3>
+          {d.data.description && <p>{d.data.description}</p>}
+          <p class="doc-meta">{c.name}</p>
+        </a>
+      )))}
+    </div>
+  </div>
+  <script type="application/json" id="doc-index">{JSON.stringify(index)}</script>
+  <script>
+    const input = document.getElementById("doc-search") as HTMLInputElement;
+    const cats = document.getElementById("doc-cats")!;
+    const cards = [...document.querySelectorAll<HTMLElement>(".doc-card")];
+    let activeCat = "";
+    function apply() {
+      const q = input.value.trim().toLowerCase();
+      let visible = 0;
+      const counts = new Map<string, number>();
+      for (const card of cards) {
+        const cat = card.dataset.cat ?? "";
+        const text = (card.textContent ?? "").toLowerCase();
+        const show = (!activeCat || cat === activeCat) && (!q || text.includes(q));
+        card.style.display = show ? "" : "none";
+        if (show) {
+          visible++;
+          counts.set(cat, (counts.get(cat) ?? 0) + 1);
+        }
+      }
+      const empty = document.getElementById("doc-empty");
+      empty?.toggleAttribute("hidden", visible > 0);
+      for (const btn of cats.querySelectorAll<HTMLElement>(".cat-btn")) {
+        const cat = btn.dataset.cat ?? "";
+        const badge = btn.querySelector<HTMLElement>(".badge");
+        if (badge && q) badge.textContent = String(counts.get(cat) ?? 0);
+        btn.classList.toggle("active", activeCat === cat);
+      }
+    }
+    input.addEventListener("input", apply);
+    cats.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>(".cat-btn");
+      if (!btn) return;
+      activeCat = activeCat === btn.dataset.cat ? "" : btn.dataset.cat;
+      apply();
+    });
+  </script>
+  <p id="doc-empty" hidden>没有匹配的文档。</p>
+</BaseLayout>

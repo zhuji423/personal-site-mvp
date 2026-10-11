@@ -1,0 +1,301 @@
+---
+title: "**项目阶段总览（Summary）**"
+description: "AI数据分析助手分阶段构建与多工具效能对比"
+date: "2026-10-11"
+category: "AI案例与实践"
+source: "F:\\百度工作\\02_Agent_learn\\Agent_learn\\downloads_20260427_organized\\00_source_zips\\AI 实践案例库\\ku-export-ai-cases_20260427\\AI数据分析助手分阶段构建与多工具效能对比.md"
+---
+AI数据分析助手分阶段构建与多工具效能对比
+
+#### 🧑‍🏫 案例作者：[@孙嘉阳](https://ku.baidu-int.com?t=mention&mt=contact&id=422c2e80-f2cb-11f0-80f0-91056ee5134c)
+#### 🎬 案例分类：测试、评估、全流程
+#### 🔧 使用工具：Gemini、秒哒、Al Studio、Deepseek
+#### 📒 案例概要：本案例分阶段构建AI数据分析助手：秒哒调研需求→DeepSeek生成PRD→秒哒vs Gemini开发测试。建立六大维度评估体系，深度评测AI编程助手在数据真实性、可视化与语义理解能力的差异，形成从需求到落地的全流程AI开发实证研究。
+[文档目录]
+# **项目阶段总览（Summary）**
+本项目共分为**三个阶段**，完整记录了从需求调研到产品落地的AI辅助开发全流程：
+
+|阶段|阶段名称|使用AI工具|核心任务|产出成果|
+|-|-|-|-|-|
+|**第一阶段**|市场需求调研|**秒哒**|建立在线调查问卷，收集目标用户需求数据|市场调研问卷及用户反馈数据|
+|**第二阶段**|需求分析与PRD生成|**DeepSeek**|分析问卷数据，明确市场需求与痛点，生成产品需求文档|PRD文档（产品需求规格说明书）|
+|**第三阶段**|应用搭建与工具对比测试|**秒哒** vs **Gemini**|基于PRD开发AI数据分析助手，对比两款工具的开发效能|功能完整的AI数据分析助手应用及评测报告|
+
+**本案例重点**：本文档主要详细记录**第三阶段**的完整测试过程——即使用秒哒和Gemini分别开发"AI数据分析助手"的深度对比评测。第一、二阶段为项目背景铺垫，为第三阶段的工具选型提供需求基础。
+
+
+
+# 一、测试准备与需求定义
+#### **1.项目需求文档**
+本次测试基于以下功能需求开发"AI数据分析助手"：
+
+[附件]
+
+
+#### **2.测试方法**
+* **对照原则**：同一需求文档分别输入两款工具，保持测试条件一致
+* **迭代测试**：从基础功能到复杂功能逐步深入
+* **量化评估**：建立不同维度评分体系（详见第七部分）
+
+
+
+#### **3.测试数据**
+使用2026美国数学建模比赛C题数据集进行测试
+
+[附件]
+
+
+# 二、第一轮测试：基础功能实现
+#### **测试方法**
+**操作步骤**：仅插入需求文档，不添加任何额外指令，观察两款工具生成的基础界面表现。
+
+![登录秒哒生成的用户界面](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=ef3bf0c13d6f4531b39a108e7568954c&docGuid=Hu0cPe15Ft9RJY "登录秒哒生成的用户界面")
+![秒哒生成的功能界面，出现侧边栏遮挡问题](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=b362a9c51df64a1ea2771fd67c1ed71b&docGuid=Hu0cPe15Ft9RJY "秒哒生成的功能界面，出现侧边栏遮挡问题")
+![Gemini生成的功能界面，无法进行注册](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=1fd90db6c5a244168c1bfbf97e58f1ee&docGuid=7suFeNHrtLnABR "Gemini生成的功能界面，无法进行注册")
+
+
+#### **测试结果对比**
+|**功能模块**|**秒哒**|**Gemini**|
+|-|-|-|
+|**用户注册**|✅ 正常实现|❌ 无法实现|
+|**数据上传**|✅ 支持Excel/CSV|✅ 支持Excel/CSV|
+|**数据分析**|❌ **无法分析**（仅显示界面，无实际分析能力）|✅ **分析能力优秀**|
+|**学术报告**|❌ 无法生成|❌ 可生成但无法下载|
+|**侧边栏**|❌ **弹出异常**（切换界面后依旧默认弹出，需手动收回）|✅ 正常|
+|**知识库**|✅ 显示正常|❌ **无法打开**|
+
+
+
+#### **初步发现**
+**秒哒优势**：用户注册流程完善，数据上传格式支持全面，知识库前端展示正常
+
+**Gemini优势**：核心数据分析能力出色，侧边栏交互稳定
+
+**共性短板**：学术报告下载功能均未完善实现
+
+
+
+# 三、第二轮测试：系统性错误修复
+#### **测试目标**
+评估两款工具对系统错误的**自动识别能力**、**修复效率**和**指令理解准确度**。
+
+
+
+#### **秒哒的修改过程与问题**
+（1）假数据生成问题
+
+    * 指令要求："根据用户上传数据进行数据分析"
+    * 实际表现：**生成假数据而非分析真实上传数据**
+    * 后续修改后，界面显示"此为模拟数据"提示，存在**误导性**
+
+![假数据生成：上传数据集只有性别与身高两个变量的情况下，分析解读出现年龄和满意度](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=daf971ed4791490998f0536c4670f892&docGuid=7suFeNHrtLnABR "假数据生成：上传数据集只有性别与身高两个变量的情况下，分析解读出现年龄和满意度")
+（2）Excel识别失败
+
+    * 指令要求："识别Excel数据并进行分析"
+    * 实际表现：**无法正确解析Excel文件内容**，数据呈现错误
+
+（3）侧边栏状态异常
+
+    * 指令要求："侧边栏在上传数据和查看数据分析结果的时候默认收起"
+    * 实际表现：**切换界面后依旧默认弹出**，需反复手动收回
+
+（4）指令回馈异常
+
+    * 额外系统性修改需要消耗"秒点"（平台计费单位）
+    * 指令回馈存在异常，理解成本高
+
+（5）数据分析表面化
+
+    * 仅有数据呈现，缺乏深度分析能力
+
+![数据分析片面化：分析用户上传数据集后，只是简单呈现数据结果](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=ac29c0d13c6840a5b4dc9ccb2f523e4a&docGuid=E1RkM-LOoNGpiX "数据分析片面化：分析用户上传数据集后，只是简单呈现数据结果")
+
+
+#### **Gemini的修改过程与表现**
+**优势表现**：
+
+（1）清晰的错误识别
+
+    * 可自动识别系统错误，但**单次只聚焦一个错误**
+    * **指令回馈清晰明确**，可以理解全部内容
+
+（2）友好的调试提示
+
+    * 系统自动提示错误原因（如：图像长宽设置为-1）
+    * 便于后期针对性修改
+
+**存在的不足**：
+
+* 多个系统性错误需**反复识别、反复修改**
+* 个别数据分析无法生成图像
+* 部分图像生成时报错
+
+
+
+#### **对比总结**
+|维度|秒哒|Gemini|
+|-|-|-|
+|自动修复|可自动识别，不消耗秒点|可自动识别，单次处理一个|
+|指令理解|❌ 回馈异常，易产生误导|✅ 清晰明确，执行精准|
+|调试友好性|❌ 需大量人工干预|✅ 错误提示详细，便于调试|
+|数据真实性|❌ **生成假数据，严重失信**|✅ 基于真实数据分析|
+|修改成本|额外修改消耗秒点|无额外计费压力|
+
+# 四、第三轮测试：数据可视化优化
+#### **测试目标**
+评估两款工具在图像生成、回归拟合、数据排序等方面的表现
+
+
+
+#### **秒哒的数据排序问题**
+![秒哒生成的图表，横坐标按原始数据顺序排列，显得混乱无序](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=5e7aa879362c4cabb96d8a934100a70c&docGuid=E1RkM-LOoNGpiX "秒哒生成的图表，横坐标按原始数据顺序排列，显得混乱无序")
+核心问题：无法按数值大小排序
+
+* 图表横坐标**不按数据从小到大展示**
+* 而是按数据在**上传表格中出现的先后顺序排列**
+* 严重影响数据可视化的专业性和可读性
+
+调整指令：“数据图表横纵坐标轴数据都要按从小到大排列，不能乱序排列。”
+
+![调整后结果](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=a6934a58cfd4494ba1edc70bf42f4a07&docGuid=E1RkM-LOoNGpiX "调整后结果")
+
+
+#### **Gemini的图像调整过程**
+调整前的问题：
+
+* 图像生成报错（长宽设置为-1）
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=94bfbad1622241be951a3e01296e8d41&docGuid=E1RkM-LOoNGpiX "")
+调整步骤：
+
+（1）根据系统提示识别错误原因
+
+（2）修改图像参数配置
+
+（3）重新生成并验证
+
+调整后结果：
+
+* ✅ 成功生成散点图
+* ✅ 数据解读准确
+* ✅ 可视化效果专业
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=bc88dc4e7ca44855bc3ad8920117415f&docGuid=E1RkM-LOoNGpiX "")
+
+
+#### 关键洞察：
+数据可视化不仅是"画出图表"，更需要**合理的排序逻辑**和**准确的变量理解**。Gemini在这方面的优势使其生成的分析报告更具专业性，而秒哒的不足需要大量人工干预。
+
+# 五、第四轮测试：深度数据分析能力
+#### **变量理解与语义识别**
+**秒哒的局限：**
+
+* ❌ **无法识别变量名称的具体含义**
+* 只能进行简单的关系分析和结果呈现
+* 缺乏对业务语义的理解
+
+![秒哒的数据分析结果截图，仅有数值关系，无变量含义解释](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=17811a40602442d4be041916b967691d&docGuid=E1RkM-LOoNGpiX "秒哒的数据分析结果截图，仅有数值关系，无变量含义解释")
+**Gemini的优势**：
+
+* ✅ 系统中**接入了AI大模型**
+* ✅ 可**识别数据集中变量的业务含义**
+* ✅ 给予**专业的变量解释和数据分析说明**
+
+![Gemini的数据分析结果截图，能识别celebrity_age_during_season是年龄，placement代表排名，并猜测数据背景是比赛](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=5ae6c5a33fb440a18f1a6ce1c5b95f28&docGuid=E1RkM-LOoNGpiX "Gemini的数据分析结果截图，能识别celebrity_age_during_season是年龄，placement代表排名，并猜测数据背景是比赛")
+
+
+#### **文字说明深度对比**
+|对比项|秒哒|Gemini|
+|-|-|-|
+|变量含义识别|❌ 无法识别|✅ 精准识别|
+|业务语义理解|❌ 表面化|✅ 深度理解|
+|分析说明质量|❌ 仅有数据呈现|✅ 专业解读|
+|学术价值|低|高|
+
+# 六、指令理解与智能建议对比
+#### **指令复杂程度需求**
+秒哒：高指令复杂度需求
+
+* 需要**比Gemini更多、更详细的指令**才能调整出效果
+* 最终结果**仍比Gemini差**
+
+|简单指令|秒哒表现|Gemini表现|
+|-|-|-|
+|"生成图表"|❌ 横坐标混乱无序|✅ 自动合理排序|
+|"数据分析"|❌ 不分析上传表格，生成假结果|✅ 基于真实数据深度分析|
+
+秒哒的指令理解能力有限，需要用户具备较强的**提示词工程能力**。
+
+
+
+#### **智能建议能力**
+**Gemini的主动智能**：
+
+* 会为程序**自动提供智能建议**
+* 示例："是否需要加入假设检验？"
+* 展现出更强的**业务理解能力**和**开发辅助能力**
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=63e53c02a5b446c9b4f3ffc2b8843a5c&docGuid=E1RkM-LOoNGpiX "")
+
+
+#### **Gemini的稳定性问题**
+**发现的缺陷**：
+
+* 在修改程序时，会把**之前已调试好的界面又改回最初状态**
+* 例如：知识库部分已调试完成，修改其他功能时又被重置
+
+**口令补充提示：**
+
+“在保留XXX不变的基础上，增加/改变......"
+
+# 七、核心差异总结及选型建议
+#### **功能实现对比总结表**
+|功能维度|秒哒|Gemini|胜出方|
+|-|-|-|-|
+|用户系统|✅ 完善|❌ 缺失|秒哒|
+|数据上传|✅ 格式支持全|✅ 稳定|平手|
+|数据分析|❌ 假数据|✅ 真实深度分析|Gemini|
+|可视化排序|❌ 乱序|✅ 有序|Gemini|
+|变量理解|❌ 无语义|✅ AI大模型识别|Gemini|
+|智能建议|❌ 无|✅ 主动提供|Gemini|
+|错误提示|❌ 误导|✅ 清晰|Gemini|
+|界面稳定性|⚠️ 侧边栏异常|⚠️ 修改时重置|各有不足|
+
+
+
+#### **使用场景建议**
+**选择Gemini的场景**：
+
+* 深度数据分析需求
+* 学术研究、数据科学项目
+* 需要专业数据解读的业务分析
+* 复杂数据可视化需求
+
+**选择秒哒的场景**：
+
+* 快速原型开发
+* 基础用户系统搭建
+* 简单数据展示需求
+* 对开发效率要求高于分析深度
+
+# 附录：项目产出
+**秒哒问卷：**[https://app-922rxhrhr56p.appmiaoda.com](https://app-922rxhrhr56p.appmiaoda.com)
+
+**秒哒测试应用1.0：**[https://app-99ds1tkwt5a9.appmiaoda.com](https://app-99ds1tkwt5a9.appmiaoda.com)
+
+**Gemini测试应用1.0：**[https://ai.studio/apps/drive/1DX5NcESBsAC_KcNp0LCs-D2Do7_p4NVP?fullscreenApplet=true](https://ai.studio/apps/drive/1DX5NcESBsAC_KcNp0LCs-D2Do7_p4NVP?fullscreenApplet=true)
+
+**分析报告：**
+
+[附件]
+# [AI+社区首页](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/opdELIFv2_oFZg)
+## [📒 查看/分享更多案例](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/_U6EhhLx7F5_DI)
+更多厂内AI实践案例、案例投递入口
+
+## [📪 创作者投稿](https://ku.baidu-int.com/share/shr5MRDhohjq9dAlY9MCQ/fomaWTzCTogCK4wkc3&spaceId=spcC9AM3yK7rD)
+产研干货文章、AI洞察、个人AI技巧
+
+## [🔧 AI工具箱](https://tools.baidu-int.com/)
+厂内外热门工具，一键使用
+
+###### **🌟欢迎星标本文、评论区点赞、投币、留言**   [👗社区如流群](https://applink-infoflow.baidu.com/share/contact/open/?token=ZDbWqAs7nQEaXdmgxb6vizK7WFPKWNeibo75Ua-D0_M)    👆更多AI内容点击上方，即刻跳转

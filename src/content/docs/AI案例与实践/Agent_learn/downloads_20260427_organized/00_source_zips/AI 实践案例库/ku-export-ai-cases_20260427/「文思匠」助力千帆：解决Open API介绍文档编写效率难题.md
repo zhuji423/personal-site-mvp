@@ -1,0 +1,184 @@
+---
+title: "[AI+社区首页](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/opdELIFv2_oFZg)"
+description: "「文思匠」助力千帆：解决Open API介绍文档编写效率难题"
+date: "2026-10-11"
+category: "AI案例与实践"
+source: "F:\\百度工作\\02_Agent_learn\\Agent_learn\\downloads_20260427_organized\\00_source_zips\\AI 实践案例库\\ku-export-ai-cases_20260427\\「文思匠」助力千帆：解决Open API介绍文档编写效率难题.md"
+---
+「文思匠」助力千帆：解决Open API介绍文档编写效率难题
+
+#### 🧑‍🏫 案例作者：[@陈琦洁](https://ku.baidu-int.com?t=mention&mt=contact&id=422c2e80-f2cb-11f0-80f0-91056ee5134c)
+#### 🎬 案例分类：开发
+#### 🔧 使用工具：数字员工
+#### 📒 案例概要：文思匠数字员助力解决ACG - 千帆公有云团队 Open API 文档整理的核心痛点，实现业务效率与文档规范性双提升。
+针对团队 Open API 发布需人工逐字段核对、跨平台搬运等问题，千帆公有云联合 SEP-EE 团队，引入聚焦 API 文档全流程处理的文思匠。可将团队文档规范沉淀为可配置 Rules，自动完成标准化文档生成。让文思匠从辅助升级为文档生产主力，重构文档发布链路
+在日常工作中，Open API介绍文档的编写整理，是一项高频、重复且容错率要求极高的工作，而且目前全部靠人工，但是：
+
+**人工整理难❗️❗️❗️**
+
+**人工填字段难❗️❗️❗️**
+
+在此背景下，**ACG-千帆公有云业务团队 **与 **SEP-EE团队**合作，尝试在业务核心工作流程中引入EE的**「文思匠」数字员工：****将原本依赖人工完成的Open API介绍文档的整理、润色与同步工作交由文思匠协助完成****，**不仅解决了效率瓶颈，也为类似场景沉淀了一套可复用的落地实践路径。
+
+**文思匠应用前后对比：效率、体验双提升**
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=0d37b2869d014b68bbac7d7a7ca3b043&docGuid=pBlcs_PGglDPkU "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=1cbd3dff5f374810b5cf6e828c42f7d9&docGuid=pBlcs_PGglDPkU "")
+## 一、业务现场：Open API介绍文档整理的效率瓶颈
+以千帆公有云业务团队为例，涉及很多Open API 对外发布工作，**有这么个角色 ---TW （Open API工程师）承担着接口文档“对外转化”的关键任务****：**
+
+* 需要将内部接口文档逐条、逐字段校验整理为可对外发布的 Open API 介绍文档，这一过程全靠人工操作：字段信息核对、文案润色、格式调整以及跨平台内容搬运，整体工作重复度高、耗时长，但对准确性和规范性要求极高
+
+随着接口数量增多，痛点越来越明显：要逐行核对接口介绍文档，格式规范全靠个人经验把控，想多并行处理几个文档根本做不到
+
+* 不同人员撰写接口文档风格不一，理解文档耗费精力；
+* 接口润色需人工反复核对对外表述，冗余工作多易出错；
+* 接口文档字段多，同步到平台依赖人手，无法并行推进，费时费力
+
+这种重复劳动的困扰，其实不仅在千帆公有云业务有，也在ACG官网文档发布相关业务中也普遍存在
+
+**原来：RD写接口文档 → TW（Open API工程师）人工整理润色接口文档 → TW在万卷平台手动填写字段 → 发布到ACG官网**
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=f28df60b75344f20831c5bd11ac7cff9&docGuid=pBlcs_PGglDPkU "")
+## 二、对症下药：引入「文思匠」，解决业务痛点
+****
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=b8a6e008594948c2b82ea8e8498a4833&docGuid=27XYK8QFRdZE3s "")
+**文思匠是谁？**
+
+[文思匠【数字员工】](https://applink-infoflow.baidu.com/share/contact/open/?token=gHr2aVYt6dpMU--6uoUAD6bLVUV1KX0FHGLV8-ubw2Y?t=mention&mt=doc&dt=sdk)是文档工程师，由SEP-EE部门出品，聚焦解决接口文档的**编写、更新、润色、管理**问题，主要能力包括：
+
+* **基于Rules生成API文档**：支持业务自定义规则，约束生成的API文档的格式（如：header 等参数默认信息、语言风格等）
+* **代码/详设解析生成API文档**：自动解析代码/文档的核心接口信息（含参数定义、返回值规范、调用示例等），生成标准化Swagger格式的API 文档
+* **代码文档一致性验证**：代码CR、MR阶段，实时监测代码变更（如接口新增、参数调整等），同步扫描iAPI平台相似接口文档，识别差异
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=a2caab880d4f433f921004ddda3ce451&docGuid=pBlcs_PGglDPkU "")
+
+
+其中，**基于 Rules 的文档生成能力与 TW（Open API 工程师）的日常工作高度契合：**
+
+* TW 基于内部文档，人工对 Open API 介绍文档进行整理与润色
+* 文思匠可通过自定义 Rules，实现文档格式统一、表述规范与内容优化等自动化润色效果，恰好承接了 TW 日常中大量重复、繁琐的文档整理工作。TW 只要将日常文档整理与润色的经验沉淀为规则配置，即可持续复用到文思匠的文档生成过程中
+
+
+
+## 三、深度融合：「文思匠」从“打辅助”到“进主力队”
+围绕「基于 Rules 的文档润色」这一核心适配点，我们并没有一上来就全面推广工具，而是结合千帆公有云团队的实际工作方式，**让文思匠真正贴合 TW 的日常工作，不是让业务去迁就工具。**
+
+**第一步：协作启动，摸清用户先把流程“跑通”**
+
+合作初期，先把业务的真实流程摸清楚，才能确认文思匠适合在哪些流程节点介入
+
+* **用户怎么用**：TW 在什么阶段开始整理文档？哪些内容必须人工确认？
+* **文档怎么维护**：接口信息来自哪里？哪些字段是稳定的，哪些是经常变的？
+* **发布前怎么校验**：哪些检查点是必须的？哪些问题最容易出错？
+
+了解下来：TW 通常基于 RD 在知识库中的接口文档完成接口测试后，再逐字逐句对 Open API 进行润色介绍，并在万卷平台录入字段，最终发布至 ACG 官网。因此我们将文思匠的文档润色能力接入 iAPI，TW 在完成接口测试后，可直接调用文思匠进行润色并推送，减少跨平台操作，让测试与对外文档发布自然衔接
+
+
+
+**第二步：规则沉淀，把“经验”变成“资产”**
+
+真正决定文档质量的，是**长期积累下来的规范和经验**
+
+在这一阶段，协同业务团队逐步将实际工作中形成的隐性经验进行系统梳理，例如：
+
+* Open API 文档的结构和排版习惯
+* 对外描述中的固定用语与禁忌表达
+* 不同类型接口的常用说明模板
+
+这些经验不再停留在个人脑子里，而是被持续沉淀为 **文思匠可配置的 Rules**。
+
+同时，结合实际使用反馈调整Rules细节，确保生成效果，文档质量不再依赖个人经验，新同学也能快速产出规范文档，团队经验开始真正“可复制”
+
+
+
+**第三步：流程融合，工具成为“主力角色”**
+
+当Rules逐渐完善、生成效果达到预期后，文思匠正式融入 Open API 对外发布的核心流程：
+
+> 确认润色接口 → 文思匠自动生成并润色文档 → 文思匠一键同步至万卷平台 → 人工审核 → 发布至 ACG 官网
+此时，工具的角色也发生了明显变化：
+
+从最初的“辅助整理”，升级为**承担主要文档生产工作的核心战力**。业务同学的工作方式随之转变——
+
+不再需要反复写文档、调格式、搬字段，而是将精力集中在**最终质量把控**上，真正帮助团队摆脱重复劳动，让文档发布在效率与规范性上实现双提升
+
+## 四、落地成果：“越用越顺手”，离不开了
+目前，文思匠已与千帆公有云的对外文档流程深度融合，对业务同学而言并非颠覆性改造，而是一种**循序渐进的减负升级**——工作方式在不知不觉中被优化，原本繁琐、重复的事务性工作被工具逐步接管
+
+* **文档整理方式的变化**：从过去依赖个人经验、反复手工调整、手动填写，转变为基于 Rules 的标准化输出，自动同步到万卷。TW 不再需要逐字逐句修改文档、填写文档，只需在进行结果确认修改，即可产出符合对外规范的 Open API 介绍文档
+* **TW 工作重心的变化**：从“手动整理、搬运文档”，转变为“结果确认与质量把关”。重复改写和字段录入的工作被文思匠承接，TW 可以将更多精力投入到关键内容审核与业务判断上
+
+流程上的变化也非常直观，相比过去多次手工整理与跨平台操作，文档发布在效率和规范性上都实现了明显提升
+
+**现在：RD写接口文档 → 文思匠润色接口文档 （TW确认）→ 文思匠推送到万卷平台（TW确认） → 发布到ACG官网**
+
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=56ca3d43dd68426989d11e2a27f1d7cb&docGuid=pBlcs_PGglDPkU "")
+
+
+## 五、一线声音：业务同学的提效感受
+那文思匠到底好不好用呢，光我们说还不够，一线业务同学最有发言权。大家使用文思匠一段时间后，大家的反馈都很实在——真的有提效！！！
+
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=fd014d300c394f87ae9987c4bae64ce0&docGuid=pBlcs_PGglDPkU "")
+“非常感谢文思匠产研团队，陪伴式服务，帮我们一起构思方案，打磨效果。
+
+他们为我们打通了知识库/IAPI/万卷平台的流程，大大减少手工录入和API验证的繁琐流程，解放了生产力。
+
+他们为我们多次调整策略，忍受我们的“刁难”，对我们每一条润色规则都给出了完美结果，综合生成效果80分！！
+
+
+
+文思匠现在是千帆TW的亲密工作伙伴，它颠覆了我们以往的工作流程，让我们变得非常高效，可以聚焦高维价值输出。
+
+欢迎大家都来使用文思匠，解决文档场景下的AI内化难题，撒花～～
+
+同时欢迎大家一起探讨基于ACG OpenAPI的润色规则，欢迎大家一起迭代。 ”
+
+
+
+**—— from 千帆公有云团队TW 张嘉琪**
+
+## 六、这套“高效玩法”，其他业务也能抄！
+这次文思匠与千帆公有云业务的合作，并不只是解决了单一团队的文档问题，而是在真实业务流程中，沉淀出了一套**可复制、可推广的 Open API介绍文档自动化生产模式**。
+
+### 哪些业务适合直接用？
+* 如果你也需要在 **ACG 官网** 对外发布 Open API 介绍文档
+* 如果文档结构和字段相对固定，但**长期依赖人工整理、填字段和反复核对**
+
+### 业务怎么用起来？
+核心做法可以清晰拆解为 **3 个步骤**：
+
+* **统一文档规范：**明确 Open API 文档结构、字段要求和对外展示标准
+* **沉淀团队经验为Rules：**将人工整理过程中形成的判断逻辑和填写习惯，转化为文思匠可复用的规则能力
+* **由工具承接重复劳动：配置**文思匠Rules，帮忙自动完成接口信息整理、文档生成与字段填充，人工只需做最终校对确认
+
+### 这套玩法有什么用？
+* **减少对人工投入**，人为整理、填写字段，全都交给Agent做
+* **规范一次，多次复用**，边用边沉淀
+* **不改变现有接口管理方式**，接入成本低
+
+后续，文思匠将持续在更多真实业务场景中打磨能力，逐步将这一模式复用到公司内更多 Open API 介绍文档的生产与发布流程中，帮助更多团队从重复劳动中解放出来，让对外 Open API 的生产更高效、更省心✌️
+
+
+
+#### 📌欢迎来试用文思匠，随时反馈 ，提出你的意见～
+文思匠：[文思匠【数字员工】](https://applink-infoflow.baidu.com/share/contact/open/?token=IODyN_ODUkIfLgxDZnHHiqbLVUV1KX0FHGLV8-ubw2Y?t=mention&mt=doc&dt=sdk)[文思匠-API文档工程师](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/_SKPgSwp2G/B8wSneaLSC/38z9t2C8g-hMqm?t=mention&mt=doc&dt=doc)
+
+数字员工用户群：[研发数字员工用户群](https://applink-infoflow.baidu.com/share/contact/open/?token=6FIeAHunZBI_4vWQXUKREtq3VPrtvJqIPGQC_PA2JCk?t=mention&mt=doc&dt=sdk)
+
+# [AI+社区首页](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/opdELIFv2_oFZg)
+## [📒 查看/分享更多案例](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/_U6EhhLx7F5_DI)
+更多厂内AI实践案例、案例投递入口
+
+## [📪 创作者投稿](https://ku.baidu-int.com/share/shr5MRDhohjq9dAlY9MCQ/fomaWTzCTogCK4wkc3&spaceId=spcC9AM3yK7rD)
+产研干货文章、AI洞察、个人AI技巧
+
+## [🔧 AI工具箱](https://tools.baidu-int.com/)
+厂内外热门工具，一键使用
+
+###### **🌟欢迎星标本文、评论区点赞、投币、留言**   [👗社区如流群](https://applink-infoflow.baidu.com/share/contact/open/?token=ZDbWqAs7nQEaXdmgxb6vizK7WFPKWNeibo75Ua-D0_M)    👆更多AI内容点击上方，即刻跳转

@@ -1,0 +1,27 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/paths";
+
+export async function getStaticPaths() {
+  const docs = await getCollection("docs");
+  return docs.map((doc) => ({
+    params: { slug: doc.id.replace(/\.md$/, "") },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+const cat = doc.data.category ?? "未分类";
+---
+<BaseLayout title={doc.data.title} description={doc.data.description}>
+  <nav class="doc-breadcrumb">
+    <a href={sitePath("docs/")}>文档库</a> / <span>{cat}</span>
+  </nav>
+  <article class="prose">
+    <h1>{doc.data.title}</h1>
+    {doc.data.source && <p class="doc-source">来源：{doc.data.source}</p>}
+    <Content />
+  </article>
+</BaseLayout>

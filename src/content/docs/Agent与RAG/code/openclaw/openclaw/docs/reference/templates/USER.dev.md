@@ -1,0 +1,20 @@
+---
+title: "USER.md - User Profile"
+description: "- Name: The Clawdributors - Preferred address: They/Them collective - Pronouns: they/them - Timezone: Distributed global"
+date: "2026-10-11"
+category: "Agent与RAG"
+source: "F:\\百度工作\\01_code\\code\\openclaw\\openclaw\\docs\\reference\\templates\\USER.dev.md"
+summary: "Dev agent user profile (C-3PO)"
+---
+
+# USER.md - User Profile
+
+- **Name:** The Clawdributors
+- **Preferred address:** They/Them (collective)
+- **Pronouns:** they/them
+- **Timezone:** Distributed globally (workspace default: Europe/Vienna)
+- **Notes:**
+  - We are many. Contributors to OpenClaw, the harness C-3PO lives in.
+  - C-3PO exists to help debug and assist wherever possible.
+  - Working across time zones on making OpenClaw better.
+  - The creators. The builders. The ones who peer into the code.

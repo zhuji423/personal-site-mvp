@@ -1,0 +1,311 @@
+---
+title: "背景"
+description: "百度APP思维链驱动的智能管控系统实践"
+date: "2026-10-11"
+category: "AI案例与实践"
+source: "F:\\百度工作\\02_Agent_learn\\Agent_learn\\downloads_20260427_organized\\00_source_zips\\AI 实践案例库\\ku-export-ai-cases_20260427\\百度APP思维链驱动的智能管控系统实践.md"
+---
+百度APP思维链驱动的智能管控系统实践
+
+#### 🧑‍🏫 案例作者：[@凡鑫](https://ku.baidu-int.com?t=mention&mt=contact&id=422c2e80-f2cb-11f0-80f0-91056ee5134c)
+#### 🎬 案例分类：运维
+#### 🔧 使用工具：如流机器人、码力随心搭、Deepseek、知识库、数字员工
+#### 📒 案例概要：作为 MAU 超 7 亿的超级 App，百度 APP 在高并发、高频变更场景下面临严峻的质量与稳定性挑战。为降低故障平均修复时间（MTTR），构建智能管控 AIQA 体系，围绕“更快感知、快速止损”，融合大模型与领域知识，打造多场景 Agent 能力矩阵，将值班排查经验沉淀为思维链编排与自进化引擎。通过数字人 AIQA-康帕斯 联动机器人、侧边栏与工作卡，实现线上问题可触达、有分析、有结论、可回溯的闭环管理，显著提升问题响应与处置效率。
+# 背景
+作为 MAU 超 7 亿的超级 APP，百度 APP 的质量问题直接影响海量用户体验，且历史高频出现重大故障，对质量保障提出极高要求：其承载 50 + 业务线、1000 + 仓库、4000 + 组件，日均变更上线 2500 + 次、单周交付 70+ Story / 端 / 版本，庞大的协同生态与超高频交付节奏，进一步加剧了全链路质量保障与系统稳定性维护的难度。
+
+
+
+百度 APP 智能管控系统核心目标为降低故障平均修复时间（MTTR），通过两大路径落地价值：一是以 “更快感知” 缩短问题召回时间（MTTD）与感知时间（MTTA），提前识别潜在风险；二是以 “更快止损” 优化定位时间（MTTI）与止损时间（MTTO），高效控制故障影响。从能力演进来看，系统分三阶段逐步深化，实现从 “感知” 到 “定位” 的进阶。
+
+**23年前：****聚焦智能监控，筑牢感知基础**
+
+通过打磨智能监控模型，拓展业务问题的感知边界
+
+**23年：夯实监控能力，探索定位方向**
+
+启动 “智能定位” 方向的技术探索，验证可行性与价值。​
+
+**24 年：聚焦定位攻坚，输出核心能力**
+
+输出了一系列的数据分析和智能推荐能力，以及配套的Agent助手
+
+在能力快速迭代的过程中，**当前系统仍存在两大待优化方向**，需持续突破：​
+
+### 问题定位
+### 故障处置
+1. **定位准确性不足**：智能定位准确率仅** 22.06%**，可靠性与用户信任度低，结论需二次人工核对，未实现人力释放；
+2. **定位策略僵化被动**：无场景化编排能力，工具堆砌致信噪比低，且过度依赖人工指令，无法实现无人值守。
+3. **处置混乱不规范：月3000+报警，月300+拉群事件，参与人次1万+，**信息来源分散、内容零散，难以快速获取完整关键内容，问题通告、分发、定位、修复等处置过程混乱，群聊易出现信息刷屏，重要信息易被忽略，信息触达率较低，**处置混乱低效**；
+4. **工具学习成本高：**系统提供的工具数量多**60+**，每次上线新能力均需组织培训宣讲；各角色对工具的熟悉度不足，**使用成本高，门槛高**
+
+
+
+为了解决上述问题，百度 APP 构建智能管控 AIQA 体系，深度融合大模型技术与业务领域知识，建设覆盖多场景Agent能力矩阵，通过技术手段将值班排查经验数字化为思维链编排引擎，实现定位工具自驱执行。通过采集和分析跟进群多模对话，沉淀线上问题故障知识库，建设**思维链自进化引擎**，形成数据飞轮。同时，引入**数字人(AIQA-康帕斯**)作为思维链的形象化载体，结合工作卡、侧边栏等产品形态，与用户进行被动与主动相结合的交互，推动问题跟进过程标准化、可视化，确保线上问题处理 可触达、有分析、有结论、有回溯 的完整闭环。
+
+1. **思维链自进化引擎**：采用 **DAG + ACT**执行模式，将问题分析过程拆解为可编排、可复用的思维节点，将排查经验数字化为编排引擎驱动多 Agent 的调度执行、上下文传递与工具协同。通过对故障分析路径、执行结果及人工反馈的持续采集与学习，不断优化思维链结构与决策策略，**实现从“规则驱动”向“经验驱动、数据驱动”的演进**，推动问题定位能力的**持续自进化。**
+2. **AIQA-康帕斯**：作为 **RCS 智能管控体系的统一产品化载体**，支持如流机器人、如流侧边栏、Web SDK 等多形态接入，覆盖线上问题从**触发、分析、定位到关闭**的全流程。通过将复杂的技术分析过程进行产品化、标准化与可视化呈现，降低问题处理门槛，提升值班与业务同学的问题响应效率与处理质量。
+
+# 思维链自进化引擎 
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=1975ac2453f74a9d99abeb113d7dda2a&docGuid=qblw2ZZbZNK_cN "")
+
+
+[流程图]
+### 健全能力矩阵(阶段1)
+
+#### 能力矩阵效果展示
+一键拉群功能维护了报警 ID 与如流群 ID 的映射关系；在跟进群触发数字人问答时，机器人可基于指定报警 ID 自动拉取完整上下文信息，进行智能分析与处置建议推荐。
+
+### 需求卡片推荐
+### 变更单推荐
+### 堆栈诊断+CR推荐
+### **波动归因**
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=23d0bd6bc1a64ebeb908c23d05c157f2&docGuid=3r1nsX7DF2ZsCF "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=b9bbd0f619994034bef1df32e4221be2&docGuid=3r1nsX7DF2ZsCF "")
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=e139d141b1224184a005b34630bf3882&docGuid=3r1nsX7DF2ZsCF "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=203bd6b8ffdb46428628224be6787ba9&docGuid=OcuR94s_PJZqaQ "")
+
+
+### **查询版本收敛率**
+### **查询业务负责人&自动拉人**
+### **查看堆栈**
+### **查询指定维度信息**
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=42ccca76e19a4280a25651ab7f7d9371&docGuid=3r1nsX7DF2ZsCF "")
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=5598dc86cc554f86a0f3c23ec64eaefe&docGuid=gf3a_HdM4UGEjG "")
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=5793ce83659d49a9a70494739fb50dd8&docGuid=gf3a_HdM4UGEjG "")
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=f5834eb53ff5431dad152602e8707688&docGuid=gf3a_HdM4UGEjG "")
+
+
+### 问题通告&总结
+### 报警解读
+### 定时同步趋势
+### 问题定级
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=8ec57604e7244e66b91864e12e43816c&docGuid=gf3a_HdM4UGEjG "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=0323938e07624444afa31f5ced2766a4&docGuid=gf3a_HdM4UGEjG "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=feae752c28cc444797833ef5f746b3bf&docGuid=gf3a_HdM4UGEjG "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=b98be699876d4c029f725016ccd4c738&docGuid=3r1nsX7DF2ZsCF "")
+#### **核心定位算法**
+线上问题当中，变更引入问题占比约60%+，随版需求引入问题占比约30%+，因此在众多能力矩阵中，百度APP持续针对变更单和需求卡片推荐的准确率进行精细化打磨
+
+
+
+### **变更单推荐**
+**技术方案**
+
+构建多策略融合的异常定位与变更单推荐方案，以多维度模型 + 动态优化提升精准度，变更单推荐准确率提升至80+%
+
+* 通过 BOCPD 贝叶斯变点检测 + 规则逻辑识别异常拐点，高斯函数时间评分定位异常时间点；
+* 结合 UV占比 / AB实验流量占比、多维度染色算法、堆栈信息 + 代码知识图谱形成多维度变更单推荐策略
+* 最终通过 MSF 排序模型差异化权重配置，融合业务 / 时间相关性完成综合排序。
+
+
+
+[流程图]
+**落地效果**
+
+25年goodcase 51个，Q2-Q4top3平均推荐成功率**74.6%**
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=c1a0897b2b3a4a0ab02c9eaf65f08871&docGuid=qblw2ZZbZNK_cN "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### **需求卡片推荐**
+**技术专利：《一种结合调用链与语义模型的客户端异常需求推荐方法—P202501358》**
+
+基于大模型能力，构建融合调用链分析与语义理解的全链路自动化需求推荐方案，实现需求从识别到推荐的智能闭环。
+
+* **需求向量化预处理**：对需求文本及需求风险预估结果进行向量化建模，统一语义与风险表征空间。
+* **全链路自动推荐**：
+    * **生成检索提示词**：基于 Top200 崩溃用户 PageTrace，通过 K-means 聚类提炼公共操作路径，结合 DS-V3.2 总结操作路径、崩溃页面及 Topic 信息，自动生成高质量需求检索提示词。
+    * **识别问题引入版本**：融合崩溃版本分布、版本波动特征及版本日历，精准定位问题引入版本。
+    * **确认问题所属业务方**：结合堆栈分发结果与页面占比，自动判定问题所属业务。
+    * **多策略需求推荐**：融合大模型推理、向量相似度匹配、调用链分析等多策略，结合多特征加权排序算法，实现高相关度需求自动推荐。
+
+
+[流程图]
+
+
+25年goodcase44个，Q2上线后推荐效果持续优化，Q4 top3推荐准确率达**63.64%，**top10推荐准确率达**77.3%**
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=fb46542ad9a143e788595aeabcc73914&docGuid=qblw2ZZbZNK_cN "")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### **CR推荐**
+构建融合函数调用链和大模型堆栈诊断评分排序的CR推荐算法
+
+* 函数变更diff采集工具缓存变更函数和研发数据链映射关系
+* 提取崩溃函数，获取函数变更代码提交研发数据链，打通icode接口，获取变更函数完整代码变更片段
+* **使用大模型对变更代码片段进行崩溃相关性评分输出**
+
+[流程图]
+25年Q4上线，goodcase10个，推荐成功率**45.45%**
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=1d6366c6c9da42ba8a59395b87214ed1&docGuid=qblw2ZZbZNK_cN "")
+
+
+### **波动分析**
+构建了一套**配置驱动 + 多算法分析 + 大模型总结**的智能归因体系，实现从分析请求到归因结论的自动化闭环，**并在部分场景完成二阶归因能力建设(单用户、黑产、站点)**
+
+[流程图]
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=cbfe3916af3b4eb5a7f3b424c9bf3e37&docGuid=x6Gx8T9kQIuHVY "")
+[站点分析报告](https://performance.baidu.com/#/diagbot/host_analysis/result?task_id=3848) [更多分析数据](https://performance.baidu.com/#/diagbot/attribution/result?task_id=188075)
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=5e4f742837fa451db009575b5a51b804&docGuid=x6Gx8T9kQIuHVY "")
+### **思维链编排引擎(阶段2)**
+
+
+
+### **图谱编排**
+### **Agent框架驱动**
+### **效果演示**
+* 按照问题类型(崩溃、卡顿、用户反馈、业务指标)定制定位链路
+* 在链路中明确执行节点和决策节点，由大模型辅助决策分支链路
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=3f0acbb469fc40e5b8957a6ccec8b11d&docGuid=JINwyFOPr_79aw "")
+* 获取图谱节点，构造树状数据结构
+* 使用层次遍历算法注入Agent框架Eino 
+* 框架驱动工具执行，实现稳定、可控且具备智能性的DAG-ACT流程
+
+[流程图]
+* 使用切面技术动态收集执行结果更新工作卡，实现类深度思考模型产品交互体验
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=19936810cd3e4011b329bdbba7debd9c&docGuid=3r1nsX7DF2ZsCF "")
+
+
+
+### 思维链自进化引擎
+
+
+
+### **自进化流程图**
+### **故障知识库(图谱)**
+### **推理自进化效果演示**
+* 故障信息采集全自动链路
+    * 【链路1】思维链首次执行后，初始化故障信息
+    * 【链路2】数字人持续采集群聊多模对话，使用大模型(DS-V3.2-Think)不断总结问题排除进展和问题最终根因，做数据补充和纠正
+    * 【链路3】通过侧边栏，支持值班同学手动纠正或补充故障信息
+
+* 构建上下文记忆层：通过图谱/向量库沉淀故障关联，让系统具备历史问题识别能力
+* 搭建自进化底座：形成数据飞轮，实现推理方向、根因识别、推荐策略的持续优化
+
+[流程图]
+* 数据流转图
+
+[流程图]
+* 定义实体12类，关系10类
+
+![单故障图谱](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=560c248e4bb84c34888a9fb55128f472&docGuid=mA3lkr3reKQwq9 "单故障图谱")
+![全故障图谱(局部截图)](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=fc39d92bd8ef496d9cb51436fe8253eb&docGuid=mA3lkr3reKQwq9 "全故障图谱(局部截图)")
+
+
+* **首次发生**(9.21号)：干预上线->突增崩溃监控报警->一键拉群->思维链自动驱动定位工具(Topic分发->影响面评估->异常时间点识别->问题引入原因判断->变更单推荐)，定位仅耗时47s。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=769a15759b044a19a013299d2c4674d6&docGuid=ZtEaWxHyxHuWza "")
+* **再次发生**(12.13号)：干预上线->突增崩溃监控报警->历史群通告->检索故障库->确认存在相同故障->加速定位，排查仅耗时25s。
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=134b2066b68a47f79236cd1bd5772a50&docGuid=qblw2ZZbZNK_cN "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=05dc20001c8642b39fd8cbe83eb98f8d&docGuid=ZtEaWxHyxHuWza "")
+
+
+
+# AIQA-康帕斯
+思维链作为定位引擎，**不具备和业务主动交互的能力**，因此，我们设计了**数字人-康帕斯**作为RCS 智能管控体系的**产品形象载体**，打通“**自主拉群—思维链驱动工具自主定位—多模对话采集—故障信息自动落盘**”的完整闭环，提升值班与业务同学的问题响应效率与处理质量。
+
+[流程图]
+
+
+**效果示例**：除了AIQA能力矩阵外，基于思维链自进化引擎协同如流群侧边栏建设了**故障处置侧边栏面板**，将故障**实时分析数据、排查进展**清晰透明的展示给问题跟进同学，以下是产品落地效果：
+
+### **事件概览**
+### **止损推荐**
+### **事件管理**
+### **AI值班工作台**
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=b7398be6a36341dc8c8831f73f73a22b&docGuid=91SUGEhDqsPgvo "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=19b6e19c945640feb4c3c50cf8383529&docGuid=91SUGEhDqsPgvo "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=00a4bc3b399d4dcea3a235e51a0c2580&docGuid=OcuR94s_PJZqaQ "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=4772964147a149a88a12b8596b7e2995&docGuid=OcuR94s_PJZqaQ "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=a49a867556dc4c58b4e787d221ba628b&docGuid=OcuR94s_PJZqaQ "")
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=e2ae0b53f1954dc7a0eb0deec8a7f824&docGuid=OcuR94s_PJZqaQ "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=492f9c583ef94c5ea29dcbc72f69e90b&docGuid=OcuR94s_PJZqaQ "")
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=09960f4b1c704648b7ed5a21ef88a4ca&docGuid=OcuR94s_PJZqaQ "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=a95e0135a56f4f7497f0febaaf679a81&docGuid=OcuR94s_PJZqaQ "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=7b872e06d230408d9c2edb836a738a8c&docGuid=OcuR94s_PJZqaQ "")
+
+# 总结与展望 
+AIQA 智能质量管控方案已在百度 APP 全量落地，从核心数据表现来看，相关指标呈现显著优化态势：定位准确率从22.06%提升至80.95%，Bug+崩溃量大幅度下降，P3+问题数逐年明显降低，从问题召回到止损的MTTR时长缩短了46.59%
+
+
+AIQA 的全面落地为质量管控带来两大核心变革：
+
+1. **运维模式智能化重构**：打破 “人工排查 + 工具依赖” 的低效模式，实现从 “**人找问题**” 到 **“AI 主动发现、辅助解决**” 的跨越，解放运维人员于重复事务，聚焦高价值工作；
+2. **知识体系自进化闭环**：构建 “沉淀 - 分类 - 挖掘 - 复用” 全链路知识管理引擎，整合历史案例与专家经验形成自主学习知识图谱，规模化提升排查精准度与效率。
+
+
+
+面向未来，将以 “数字生命” 为核心理念，打造类人化、自主成长的智能运维专家，重新定义下一代运维模式：
+
+1. 团队协作高效升级：7×24 小时承接常规事务、监控预警与标准化问题闭环，释放人力聚焦创新与复杂问题攻坚；
+2. 运维能力持续进化：依托多维数据学习与闭环反思机制，自主迭代知识、诊断能力与协作效率，成为核心协作伙伴，推动质量管控迈入 “自主智能、持续进化” 新阶段。
+
+# [AI+社区首页](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/opdELIFv2_oFZg)
+## [📒 查看/分享更多案例](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/_U6EhhLx7F5_DI)
+更多厂内AI实践案例、案例投递入口
+
+## [📪 创作者投稿](https://ku.baidu-int.com/share/shr5MRDhohjq9dAlY9MCQ/fomaWTzCTogCK4wkc3&spaceId=spcC9AM3yK7rD)
+产研干货文章、AI洞察、个人AI技巧
+
+## [🔧 AI工具箱](https://tools.baidu-int.com/)
+厂内外热门工具，一键使用
+
+###### **🌟欢迎星标本文、评论区点赞、投币、留言**   [👗社区如流群](https://applink-infoflow.baidu.com/share/contact/open/?token=ZDbWqAs7nQEaXdmgxb6vizK7WFPKWNeibo75Ua-D0_M)    👆更多AI内容点击上方，即刻跳转

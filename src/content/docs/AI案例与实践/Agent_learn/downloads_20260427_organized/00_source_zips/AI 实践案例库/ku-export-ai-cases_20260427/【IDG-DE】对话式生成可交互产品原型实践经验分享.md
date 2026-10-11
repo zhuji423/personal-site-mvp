@@ -1,0 +1,315 @@
+---
+title: "自我介绍"
+description: "【IDG-DE】对话式生成可交互产品原型实践经验分享"
+date: "2026-10-11"
+category: "AI案例与实践"
+source: "F:\\百度工作\\02_Agent_learn\\Agent_learn\\downloads_20260427_organized\\00_source_zips\\AI 实践案例库\\ku-export-ai-cases_20260427\\【IDG-DE】对话式生成可交互产品原型实践经验分享.md"
+---
+【IDG-DE】对话式生成可交互产品原型实践经验分享
+
+#### 🧑‍🏫 案例作者：[@李晶](https://ku.baidu-int.com?t=mention&mt=contact&id=a7716e40-fda7-11f0-b763-d5dc2af2140e)
+#### 🎬 案例场景：设计
+#### 🔧 使用工具：秒哒
+#### 📒 案例概要：本文围绕AI重塑产品设计流程，介绍对话式生成可交互产品原型的工具对比、实操步骤及经验，可助大家产出高保真原型，掌握提示词使用，提升产研效率。
+
+
+**本文档视频讲解：**[对话式生成产品原型实践经验分享](https://learn.baidu.com/review.html?reviewId=19415?t=mention&mt=doc&dt=sdk)
+
+# 自我介绍
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=cf833f36183149c4b117e10f9f826656&docGuid=7xsOJK_s8BolZT "")
+# 引言
+* **你是否遇到这些痛点：**
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=2ae68d8ea6644072a9ee08363d20c4f2&docGuid=7xsOJK_s8BolZT "")
+* **今天将会分享：**
+    * 一套AI重塑产品设计流程与步骤
+    * 2个工具对比（厂内：秒哒 VS 厂外：Cursor）
+    * 基于对话式生成可交互AI原型的实践经验（含提示词）
+
+* **今天你将收获：**
+    * **产出满足需求的AI高保真原型****提示词和各阶段实践tips****，立马上手能用**
+
+
+# 业务&项目背景介绍
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=913aadb6cafd401ba65ddcabc5941863&docGuid=7xsOJK_s8BolZT "")
+### 1. 数据生产平台的特性：高复杂度与逻辑密集的系统
+* **高动态任务流转：** 生产链路包含复杂的分支判断、环节跳点等逻辑。单件流模式下，系统需同时管理大量独立任务的完整生命周期，逻辑判断密度呈指数级增长。
+* **业务资产无损迁移：** 需在不中断生产的前提下，将 13 年积淀的业务规则与复杂逻辑安全迁移至新架构。
+* **多维度协同管理：** 系统需高度集成资源调度、人机协作、异常监控。
+
+### 2. 发展阶段：13 年长周期的老系统
+* **历史包袱沉重：** 老平台历经 13 年跨代开发，存在文档缺失与代码逻辑断层，导致业务逻辑抓逐渐黑盒化。
+* **长尾问题难以根治：** 复杂的业务逻辑与平台代码耦合，修复现有问题的成本高且易触发连锁故障，已难以支撑业务的迭代与多样性需求。
+
+### 3. 核心挑战：生产模式从“批量作业”转向“单件流”
+* **时效性变革：** 为突破数据生产时效竞争力，业务亟需从传统的批量生产模式，转型为随进、随处理、随出的单件流转。
+* **架构承载力断层：** 原有的调度机制、并发控制无法支持单件流模式下的高频并发与海量独立任务跟踪，必须改变。
+
+
+
+面对这样一个逻辑复杂的新平台建设任务，如果我们按传统方式画原型、写文档、对需求，过程中梳理逻辑、多方对齐必定有**大量的投入、沟通折损和反复**。
+
+再结合厂内AI内化的文化氛围，我们团队在这次实践中，决心利用 AI 工具重塑产品设计与开发流程，提升产研效率。
+
+尤其在产品原型设计阶段，通过秒哒对话式生成产品原型能力，将复杂的配置逻辑和交互直接落在高保真、可交互的原型中，并且直接将代码输入给前端，也带来了研发环节的提效。
+
+# AI重塑产品设计与开发流程
+## **传统产品开发流程**
+1. 用户访谈与分析
+2. 问卷调研与数据分析
+3. 业务逻辑梳理
+
+
+
+1. 手绘草图梳理思路
+2. 工具绘制线框图原型
+3. 文字PRD描述交互逻辑
+
+
+
+1. 基于PRD文档业务评审
+2. 基于PRD文档前后端评审
+
+
+
+
+
+1. 前端开发
+2. 后端开发
+3. 接口联调
+4. 前后端自测
+5. 梳理测试点
+6. 测试走查
+7. 反馈研发修改
+
+
+
+1. 部署上线
+
+## **AI重塑产品开发流程**
+1. 用户访谈、AI数据分析
+2. AI生成调研问卷、AI数据分析
+3. AI辅助业务逻辑梳理
+4. 利用AI工具对话生成初版原型
+5. 反复对话+试用，调试原型效果
+6. 基于AI高保真原型与业务评审
+7. 基于AI高保真原型与业务评审
+8. 前端下载原型代码直接使用，部分修改
+9. 后端开发
+10. 接口联调
+11. 前后端自测
+12. AI辅助输出测试点
+13. 测试走查
+14. 反馈研发修改
+
+
+
+1. 部署上线
+
+
+
+## 提效对比
+|**典型环节**|**效率变化**|**典型案例**|
+|-|-|-|
+|**需求分析阶段：**AI生成调研问卷、AI数据分析|**提效80%+****过去：**至少1天**现在：**1h（主要是数据验证的时间）|**直接生成可用的问卷结构和内容，仅需局部调试。**![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=59919e37e4fb42e2b9e09310e15443f7&docGuid=7xsOJK_s8BolZT "")![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=8bc12a2edb8b480da21ea4fcd1bb4ae3&docGuid=7xsOJK_s8BolZT "")![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=693f790653c743009350c9d7c36bb086&docGuid=7xsOJK_s8BolZT "")**明确需要的分析内容，可直接输出分析结论和可用图表。****尤其是把零散的用户开放性反馈总结提炼为关键优化点。**注意：先验证分析数据结果的准确性![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=1c6620a5e86d4ae1bdd466e4ea3b4497&docGuid=7xsOJK_s8BolZT "")![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=4937f0b619384ab9a67d4db0986551eb&docGuid=7xsOJK_s8BolZT "")![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=a86858b4eea541b48beab2795dad55b6&docGuid=7xsOJK_s8BolZT "")![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=78cc3687f93b4dac994a0fe573320352&docGuid=7xsOJK_s8BolZT "")![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=da40e05a3ad74c35a726f826e4e84b70&docGuid=7xsOJK_s8BolZT "")建议**多工具对比**，比选分析效果最好的工具（数据清洗、数据准确性、图表生成满意度、结论提炼满意度），对比deepseek、chatgpt、腾讯元宝、千问、豆包……|
+|**需求分析阶段：**AI辅助业务逻辑梳理|**提效50%**|如状态流转逻辑，辅助判断思考的全面性，并输出格式化的表格展示，局部修改即可使用![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=e57cf13ea53d465a8b29aaefe1da9cc8&docGuid=7xsOJK_s8BolZT "")|
+|**产品原型设计与PRD：**利用AI工具对话生成初版原型反复对话+试用，调试原型效果|**基础设计提效70%，完成产品页面和大逻辑设计****过去：**至少1周（共计12个页面）**现在：**1-2天|过去：工具绘制线框图，相对简单，交互逻辑靠文字描述![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=099dd30ebbc645a0bd7fdf9b12bb6c03&docGuid=7xsOJK_s8BolZT "")现在：1-2天产出初版全平台页面初版原型，带基础交互。但如果奔着代码可以直接给到前端使用，则细化复杂交互设计（如页面跳转逻辑、多类型操作）、在原型中融入复杂业务逻辑（如：状态流转、校验等），并不一定带来提效，但深化了产品思考并进一步明确产品效果。![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=eac22e51954f49a8a139baef087fd711&docGuid=7xsOJK_s8BolZT "")|
+|**需求评审：**基于AI高保真原型与业务评审基于AI高保真原型与业务评审|**提效60%+****过去：**至少3-4次**现在：**1次|过去：评审会协同效率低，文字描述+图片展示+语言表达，逻辑、交互难以传达到位，开发时仍需要反复沟通对齐，效果不及预期，难免带来返工成本。现在：RD和业务方可以**“沉浸式”体验：**评审时根据用户使用路径和操作使用可交互原型进行讲解；会后直接把原型链接发给协同方，在自己的浏览器里操作，顺畅串起全流程。这种**“带交互、跳转、操作链的原型”**比PRD文档和“本地 HTML 文件”更有真实感，能更早发现疑问点，高效对齐。[附件]|
+|**前后端开发与联调：**前端下载原型代码直接使用，进行调试和修改|**提效30-60%**（视功能复杂度浮动）|大幅降低**“还原型前端”**的工作量，但无法替代“工程型前端”的内容|
+|**产品测试&验收**AI辅助输出测试点|**提效80%+****过去：**半天**现在：**0.5h|过去：梳理大的测试步骤和测试点，需要沉浸式捋逻辑，一被打断就要从头梳理现在：直接输出测试步骤、预期结果、优先级，可以跟随步骤直接测试![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=dfe398d84dbf4c5db0060196f89de42f&docGuid=7xsOJK_s8BolZT "")|
+
+# 对话式生成原型工具对比
+|**特性**|**百度秒哒**|**Cursor**|
+|-|-|-|
+|**核心定位**|**无代码应用生成平台**，目标是“人人都是开发者”|**AI驱动的智能代码编辑器**|
+|**使用门槛**|**真正的零代码，自然语言驱动**|基本零代码，有基础编程知识更佳|
+|**核心能力**|多智能体协作，模拟完整软件工程流程|深度代码理解与生成，具备强大的上下文感知能力|
+|**适用场景**|完整应用搭建、H5、网站（域名配置）|代码项目开发、功能迭代|
+|**输出成果**|**可交互的高保真原型****需要部署的代码****部署后可直接交付的应用**|**浏览器可预览的本地html文件****需要部署的代码**|
+|**交互页面**|![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=630e2c95310a4c679153ab8e02bfeb1d&docGuid=3uFstzLNG4xOsK "")|![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=08fe7f0029374cc7b3a51d1cda7a34cc&docGuid=3uFstzLNG4xOsK "")|
+
+## 区别1：对话方式
+### **秒哒：**偏向于单向指令输入
+### **Cursor：**偏向交互、引导式对话
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=a313a4c46a2644d5b63a4b8dab4844a3&docGuid=3uFstzLNG4xOsK "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=0a49d2321ed1476fb779315ea34542f8&docGuid=3uFstzLNG4xOsK "")
+**自然语言提示词**
+
+只需要【规则—需求收集】内容，确认产品需求    
+
+秒哒官方提示词：[https://cloud.baidu.com/doc/MIAODA/s/smckawnys](https://cloud.baidu.com/doc/MIAODA/s/smckawnys)
+
+**工作流导向性提示词**
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=3393a745b0654bbba6234ff4b958377b&docGuid=7xsOJK_s8BolZT "")
+[新平台提示词](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/Vl7VXro9A6/YfYmEmkVXsLVeA?t=mention&mt=doc&dt=doc)
+
+
+
+## 区别2：生成原型的效果
+### **秒哒：**平台直接渲染展示
+### **Cursor：**生成本地文件，浏览器预览
+* 便于分享、分享，协同方可直接体验可交互的原型，直接对标落地效果
+* 可以不断调试页面之间的跳转关系，生成整体式的应用
+
+[附件]
+* 可以用于演示，但难以用户和研发直接进行交互体验；
+* 带有简单交互，页面之间缺乏跳转关系，调试成本较高
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=450af24b2d574adeb3df5e385a7e93bf&docGuid=3uFstzLNG4xOsK "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=bab7bed4c622499c96dff1a4c31c213c&docGuid=3uFstzLNG4xOsK "")
+总结：
+
+AI生成原型适用场景：
+
+* 0→1的产品框架搭建，快速把产品思路生成可交互的原型
+* 多个产品方案的比选
+* 可以实现直接生成代码给到研发使用
+
+
+
+工具对比：
+
+* **秒哒**：优势是内置的角色智能体已有成熟产品设计到开发工作流，直接对话式输入指令即可，更适合零编程经验的PM，在效果实时性、版本管理和原型的交互性上更优秀，但一些复杂交互存在较高调试成本；
+* **Cursor**：适合有一定代码经验的PM，可产出标准工业级代码，能够处理极高复杂度的专业级项目，但对PM的要求更高。
+
+# 基于秒哒—对话式生成可交互产品原型实践经验
+## 实操步骤
+
+
+
+
+
+
+
+
+### Step1：需求输入
+**通过关键需求收集问题，明确输入需求内容：**
+
+* 根据以下问题定义你所需的产品，输入给秒哒，内容尽量详尽：
+    * Q1：【定位】请简述您的产品是什么，它解决了什么问题？ 
+    * Q2：【用户】您的目标用户是谁？他们有哪些特点和需求？ 
+    * Q3：【结构】您希望产品包含哪些核心功能？ 
+    * Q4：【交互与视觉设计】您是否有参考的产品或设计风格偏好？ （字体/配色/动效/参考图; 交互逻辑/界面布局）
+    * Q5：【形态】您的产品是面向网页端还是移动端/App？
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=ad37b9ed88654d21be401da6a4c09ccf&docGuid=duAw-xcLJ8ZmpI "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=b31cc3aa654e49baab222a2e86ca83f7&docGuid=duAw-xcLJ8ZmpI "")
+#### 实践经验
+* 虽然秒哒可以一句话生成应用，但更精确的需求内容才能助力AI更高效地生成贴合需求的应用。关键是**产品定位明确、核心用户需求清晰、核心任务描述清楚**。
+* 这一步也可以AI辅助完成（Deepseek、chatgpt等）
+
+### Step2：初版应用生成
+**秒哒根据需求内容生成需求文档，修改后生成应用**
+
+* 需求文档：
+    * 包含技术方案（前端框架、UI库选择）、页面规划、设计风格等详尽内容
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=67b4b72c476d446a9168b23819a98cae&docGuid=duAw-xcLJ8ZmpI "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=b23121159b1b4e31aae26435a7ae864a&docGuid=duAw-xcLJ8ZmpI "")
+* 初稿应用：
+    * 核心功能页面搭建完毕
+    * 存在问题：功能细节尚不具备，页面关系存在错误，展示样式不尽如人意
+
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=1ae66a235ced456191c0a7aa758d91f4&docGuid=duAw-xcLJ8ZmpI "")
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=5dd6253d542d49f9a7c8b808802ead17&docGuid=duAw-xcLJ8ZmpI "")
+#### 实践经验
+* **需求文档重点改结构：**
+    * 模块拆分是否合理？
+    * 页面是不是围绕用户主任务？
+
+* 接受第一版不完美，但提前保证：**结构不会推翻，核心路径是对的，为后续调试降低成本**
+
+
+
+### Step3：反复对话 + 试用原型调试效果
+**通过多轮对话+反复从****用户视角****使用原型，调试到最终满意效果**
+
+* 页面展示优化：
+
+![修改意见输入、分点论述](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=d70d1dd221b3407c881a7db99c3b8b4e&docGuid=duAw-xcLJ8ZmpI "修改意见输入、分点论述")
+![修改前](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=1bb728de75d74ef0bd7549dde967b813&docGuid=duAw-xcLJ8ZmpI "修改前")
+![修改后](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=ad292a64e2104b26b4547a262d257d5a&docGuid=duAw-xcLJ8ZmpI "修改后")
+![修改后的编辑弹窗交互](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=ae365e0092234aef98f3750bf619fefb&docGuid=duAw-xcLJ8ZmpI "修改后的编辑弹窗交互")
+* 报错修复：
+
+![修复前的报错](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=edc1db8132fd4d059db0715c0bc3fdda&docGuid=duAw-xcLJ8ZmpI "修复前的报错")
+![修复指令+报错截图](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=aa81536935f245d08fc8962dc7640b84&docGuid=duAw-xcLJ8ZmpI "修复指令+报错截图")
+![修复后](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=5eefe4b9720d4fe187b0939fa31943bf&docGuid=duAw-xcLJ8ZmpI "修复后")
+#### 实践经验
+* 秒哒是“可持续调教的设计伙伴”，通过**一轮轮对话，辅助把产品设计本身逐步想清楚**，秒哒把这个过程可视化、并加速了
+* 对话提示词的关键点：
+    * 以**“用户真实使用路径”**为核心，修改路径上的交互点
+    * 上下文清晰：明确页面、模块、参照对象
+    * 约束具体：状态、样式、交互方式都有明确要求
+
+* 实用建议：另起文档记录每轮提示词，便于在提示词运行时同步继续梳理逻辑，以及原型迭代后的验证
+
+![](https://rte.weiyun.baidu.com/wiki/attach/image/api/imageDownloadAddress?attachId=2fcd578274584d739578a5058f9f0e73&docGuid=3uFstzLNG4xOsK "")
+### Step4：代码输入前端
+大幅降低**“还原型前端”**的工作量，但无法替代“工程型前端”的内容。
+
+✅ 可节省的 50%–60%
+
+* 页面结构
+* 列表样式
+* 基础交互
+* 初始组件代码
+
+❌ 仍然必须人工完成的部分
+
+1️⃣ 真实数据接入
+
+2️⃣ 工程化集成
+
+3️⃣ 状态与交互补全
+
+* 对接后端接口
+* 字段映射 & 格式转换
+* 空值 / 异常处理
+* 状态管理
+* 请求封装
+* 复杂交互与性能优化
+* 报错与兜底体验
+
+但这部分对产品经理提出了更高的要求，对于**业务逻辑、交互易用性**上都需要更深入的思考，并直接落在原型中。
+
+# 总结
+### 1. 核心价值复盘
+通过本次鲲鹏平台的产品实践中，我们验证了AI 不仅仅是画图工具，更是生产力的增强器 ：
+
+* **需求分析阶段：** 标准化动作提效 **50%+**，比如问卷设计与分析、状态逻辑梳理等，**但无法替代产品经理本身对业务逻辑的思考 **。
+* **产品设计阶段：** 基础设计提效** 70%**，原本需要 1 周绘制的 12 个页面原型，现在仅需 1-2天即可产出初版 。
+* **需求评审阶段：** 提效 **>60%**，通过可交互的原型测试，辅助深度产品共识对齐，和提前发现潜在问题点。
+* **开发落地阶段：** 提效 **30-60%**（视功能复杂度浮动），通过直接交付原型代码，大幅降低了“还原型前端”的工作量 。
+
+### 2. 工具选型策略
+在复杂的系统设计中，我们应根据场景选择“厂内”与“厂外”工具 ：
+
+* **秒哒：** 零代码利器，优势是内置的角色智能体已有成熟产品设计到开发工作流，直接对话式输入指令即可，更适合零编程经验的PM，在效果实时性、版本管理和原型的交互性上更优秀，但一些复杂交互存在较高调试成本；
+* **Cursor：** 专业的 AI 编程环境，适合**功能迭代与深度精修**，具备强大的上下文感知能力，支持引导式对话，能够产出可部署的高质量代码 。
+
+### 3. AI 时代对产品经理的更高要求
+AI 改变了工作流，也重塑了 PM 的核心能力模型：
+
+* **更强的系统性抽象能力**：PM 必须从“画图员”转变为“系统定义者” 。AI 的产出质量取决于输入的精确性。
+* **“代码化原型”的逻辑校验**：本次实践的原型是“半成品代码”而非线框图 。PM 需要在对话调试中不仅关注业务逻辑，更要具备交互体验的思考与审美。
+* **端到端的交付效能意识**：PM 的终点不再是 PRD 评审，而是代码交付 。需要精准识别 AI 提效边界（如基础交互）与人工必须介入的边界（如真实数据接入、异常处理），以此重构产研协作关系 。
+
+# 欢迎交流 ~
+**让我们拥抱“AI内化”，用AI重塑我们的思考方式与工作流！**
+
+# [AI+社区首页](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/opdELIFv2_oFZg)
+## [📒 查看/分享更多案例](https://ku.baidu-int.com/knowledge/HFVrC7hq1Q/pKzJfZczuc/WjGjiS_SK_/_U6EhhLx7F5_DI)
+更多厂内AI实践案例、案例投递入口
+
+## [📪 创作者投稿](https://ku.baidu-int.com/share/shr5MRDhohjq9dAlY9MCQ/fomaWTzCTogCK4wkc3&spaceId=spcC9AM3yK7rD)
+产研干货文章、AI洞察、个人AI技巧
+
+## [🔧 AI工具箱](https://tools.baidu-int.com/)
+厂内外热门工具，一键使用
+
+###### **🌟欢迎星标本文、评论区点赞、投币、留言**   [👗社区如流群](https://applink-infoflow.baidu.com/share/contact/open/?token=ZDbWqAs7nQEaXdmgxb6vizK7WFPKWNeibo75Ua-D0_M)    👆更多AI板块点击上方，即刻跳转
