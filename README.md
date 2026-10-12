@@ -161,6 +161,9 @@ Markdown 里引用图片：
 ![](/personal-site-mvp/assets/thesis-images/figure-01.png)
 ```
 
+## 微信群日报自动发布
+
+微信群原始数据只保存在本机，不推送到 GitHub。运行 `tools/update-wechat-site.ps1` 会导出微信、调用 Codex 生成日报、同步到 `src/content/wechat-daily/`、构建验证，然后提交并推送；现有 `Publish site` GitHub Action 会自动发布到 GitHub Pages。线上入口是 `/wechat-daily/`。定时任务运行时，本机微信必须已登录；GitHub Actions 云端无法访问本机微信，因此源头导出必须在本机完成。
 ## 如何发布
 
 正常更新流程：

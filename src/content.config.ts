@@ -32,4 +32,15 @@ const docs = defineCollection({
   }),
 });
 
-export const collections = { notes, projects, docs };
+const wechatDailies = defineCollection({
+  loader: glob({ base: "./src/content/wechat-daily", pattern: "*.md" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.string(),
+    category: z.string(),
+    source: z.string(),
+  }),
+});
+
+export const collections = { notes, projects, docs, wechatDailies };

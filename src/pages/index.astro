@@ -9,6 +9,7 @@ const projects = (await getCollection("projects")).sort(
   (a, b) => Number(b.data.featured ?? false) - Number(a.data.featured ?? false),
 );
 const notes = await getCollection("notes");
+const wechatDailies = (await getCollection("wechatDailies")).sort((a, b) => b.data.date.localeCompare(a.data.date));
 ---
 
 <BaseLayout title="个人网站">
@@ -38,6 +39,22 @@ const notes = await getCollection("notes");
     <div class="grid">
       {notes.slice(0, 6).map((note) => (
         <EntryCard title={note.data.title} description={note.data.description} href={sitePath(`notes/${entrySlug(note.id)}/`)} />
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <h2>WeChat Daily</h2>
+      <a href={sitePath("wechat-daily/")}>全部日报</a>
+    </div>
+    <div class="grid">
+      {wechatDailies.slice(0, 3).map((report) => (
+        <EntryCard
+          title={`${report.data.date} · ${report.data.source}`}
+          description={report.data.description}
+          href={sitePath(`wechat-daily/${report.id.replace(/\.md$/, "")}/`)}
+        />
       ))}
     </div>
   </section>

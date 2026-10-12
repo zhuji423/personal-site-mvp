@@ -1,0 +1,32 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EntryCard from "../../components/EntryCard.astro";
+import { sitePath } from "../../lib/paths";
+
+const reports = (await getCollection("wechatDailies")).sort((a, b) => b.data.date.localeCompare(a.data.date));
+---
+
+<BaseLayout title="WeChat Daily" description="Dive into GenAI 微信群聊日级分析。">
+  <section class="hero">
+    <p class="eyebrow">Dive into GenAI</p>
+    <h1>微信群聊日报</h1>
+    <p>按天整理群聊主线、代表观点、重要链接、已保存文件和当天启发。</p>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <h2>Reports</h2>
+      <span>{reports.length} reports</span>
+    </div>
+    <div class="grid listing">
+      {reports.map((report) => (
+        <EntryCard
+          title={`${report.data.date} · ${report.data.source}`}
+          description={report.data.description}
+          href={sitePath(`wechat-daily/${report.id.replace(/\.md$/, "")}/`)}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

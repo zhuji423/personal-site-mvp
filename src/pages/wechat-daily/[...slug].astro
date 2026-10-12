@@ -1,0 +1,23 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/paths";
+
+export async function getStaticPaths() {
+  const reports = await getCollection("wechatDailies");
+  return reports.map((report) => ({
+    params: { slug: report.id.replace(/\.md$/, "") },
+    props: { report },
+  }));
+}
+
+const { report } = Astro.props;
+const { Content } = await render(report);
+---
+
+<BaseLayout title={report.data.title} description={report.data.description}>
+  <article class="prose">
+    <p><a href={sitePath("wechat-daily/")}>← 返回微信群聊日报</a></p>
+    <Content />
+  </article>
+</BaseLayout>
